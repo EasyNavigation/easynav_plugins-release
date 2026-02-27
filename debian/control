@@ -1,0 +1,12 @@
+Source: ros-kilted-easynav-gps-localizer
+Section: misc
+Priority: optional
+Maintainer: Jose Miguel Guerrero Hernandez <josemiguel.guerrero@urjc.es>
+Build-Depends: debhelper (>= 9.0.0), libgeographiclib-dev, ros-kilted-ament-cmake, ros-kilted-ament-lint-auto <!nocheck>, ros-kilted-ament-lint-common <!nocheck>, ros-kilted-easynav-common, ros-kilted-easynav-core, ros-kilted-geographic-msgs, ros-kilted-pluginlib, ros-kilted-rclcpp, ros-kilted-rclcpp-lifecycle, ros-kilted-ros-workspace
+Homepage: 
+Standards-Version: 3.9.2
+
+Package: ros-kilted-easynav-gps-localizer
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, libgeographiclib-dev, ros-kilted-easynav-common, ros-kilted-easynav-core, ros-kilted-geographic-msgs, ros-kilted-pluginlib, ros-kilted-rclcpp, ros-kilted-rclcpp-lifecycle, ros-kilted-ros-workspace
+Description: Easy Navigation: GPS Localizer package.
