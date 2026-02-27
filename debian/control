@@ -1,0 +1,12 @@
+Source: ros-jazzy-easynav-gps-localizer
+Section: misc
+Priority: optional
+Maintainer: Jose Miguel Guerrero Hernandez <josemiguel.guerrero@urjc.es>
+Build-Depends: debhelper (>= 9.0.0), libgeographiclib-dev, ros-jazzy-ament-cmake, ros-jazzy-ament-lint-auto <!nocheck>, ros-jazzy-ament-lint-common <!nocheck>, ros-jazzy-easynav-common, ros-jazzy-easynav-core, ros-jazzy-geographic-msgs, ros-jazzy-pluginlib, ros-jazzy-rclcpp, ros-jazzy-rclcpp-lifecycle, ros-jazzy-ros-workspace
+Homepage: 
+Standards-Version: 3.9.2
+
+Package: ros-jazzy-easynav-gps-localizer
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, libgeographiclib-dev, ros-jazzy-easynav-common, ros-jazzy-easynav-core, ros-jazzy-geographic-msgs, ros-jazzy-pluginlib, ros-jazzy-rclcpp, ros-jazzy-rclcpp-lifecycle, ros-jazzy-ros-workspace
+Description: Easy Navigation: GPS Localizer package.
