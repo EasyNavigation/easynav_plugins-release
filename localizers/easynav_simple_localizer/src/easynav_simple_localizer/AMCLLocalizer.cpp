@@ -1,33 +1,27 @@
 // Copyright 2025 Intelligent Robotics Lab
 //
 // This file is part of the project Easy Navigation (EasyNav in short)
-// licensed under the GNU General Public License v3.0.
-// See <http://www.gnu.org/licenses/> for details.
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
 //
-// Easy Navigation program is free software: you can redistribute it and/or modify
-// it under the terms of the GNU General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
+//     http://www.apache.org/licenses/LICENSE-2.0
 //
-// This program is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU General Public License for more details.
-//
-// You should have received a copy of the GNU General Public License
-// along with this program. If not, see <http://www.gnu.org/licenses/>.
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
 
 /// \file
 /// \brief Implementation of the AMCLLocalizer class.
 
-#include <expected>
 #include <random>
 
 #include "tf2_geometry_msgs/tf2_geometry_msgs.hpp"
 #include "tf2/LinearMath/Vector3.hpp"
 
 #include "easynav_common/RTTFBuffer.hpp"
-#include "easynav_common/types/Perceptions.hpp"
 #include "easynav_common/types/PointPerception.hpp"
 #include "easynav_simple_common/SimpleMap.hpp"
 
@@ -177,7 +171,8 @@ AMCLLocalizer::AMCLLocalizer()
       double roll, pitch, yaw;
       tf2::Matrix3x3(q).getRPY(roll, pitch, yaw);
 
-      ret << "Odometry with pose: (x: " << x << ", y: " << y << ", yaw: " << yaw << ")";
+      ret << "{" << rclcpp::Time(odom.header.stamp).seconds() << "} Odometry with pose: (x: " <<
+        x << ", y: " << y << ", yaw: " << yaw << ")";
       return ret.str();
     });
 }
@@ -186,7 +181,7 @@ AMCLLocalizer::~AMCLLocalizer()
 {
 }
 
-std::expected<void, std::string>
+void
 AMCLLocalizer::on_initialize()
 {
   auto node = get_node();
@@ -264,8 +259,6 @@ AMCLLocalizer::on_initialize()
   last_reseed_ = get_node()->now();
 
   get_node()->get_logger().set_level(rclcpp::Logger::Level::Debug);
-
-  return {};
 }
 
 void printTransform(const tf2::Transform & tf)
@@ -312,6 +305,7 @@ void
 AMCLLocalizer::odom_callback(nav_msgs::msg::Odometry::UniquePtr msg)
 {
   tf2::fromMsg(msg->pose.pose, odom_);
+  last_input_time_ = msg->header.stamp;
 
   if (!initialized_odom_) {
     last_odom_ = odom_;
@@ -378,7 +372,7 @@ void AMCLLocalizer::correct(NavState & nav_state)
     return;
   }
 
-  const auto perceptions = nav_state.get<PointPerceptions>("points");
+  const auto & perceptions = nav_state.get<PointPerceptions>("points");
 
   if (!nav_state.has("map.static")) {
     RCLCPP_WARN(get_node()->get_logger(), "There is yet no a map.static map");
@@ -387,12 +381,13 @@ void AMCLLocalizer::correct(NavState & nav_state)
 
   const auto & map_static = nav_state.get<SimpleMap>("map.static");
 
+  const auto & tf_info = RTTFBuffer::getInstance()->get_tf_info();
   const auto & filtered = PointPerceptionsOpsView(perceptions)
     .downsample(map_static.resolution())
-    .fuse(get_tf_prefix() + "base_footprint")
-    ->filter({NAN, NAN, 0.1}, {NAN, NAN, NAN})
+    .fuse(tf_info.robot_frame)
+    .filter({NAN, NAN, 0.1}, {NAN, NAN, NAN})
     .collapse({NAN, NAN, 0.1})
-    ->downsample(map_static.resolution())
+    .downsample(map_static.resolution())
     .as_points();
 
   if (filtered.empty()) {
@@ -526,9 +521,10 @@ void
 AMCLLocalizer::publishTF(const tf2::Transform & map2bf)
 {
   geometry_msgs::msg::TransformStamped tf_msg;
-  tf_msg.header.stamp = get_node()->now();
-  tf_msg.header.frame_id = get_tf_prefix() + "map";
-  tf_msg.child_frame_id = get_tf_prefix() + "odom";
+  tf_msg.header.stamp = last_input_time_;
+  const auto & tf_info = RTTFBuffer::getInstance()->get_tf_info();
+  tf_msg.header.frame_id = tf_info.map_frame;
+  tf_msg.child_frame_id = tf_info.odom_frame;
   tf_msg.transform = tf2::toMsg(map2bf);
 
   RTTFBuffer::getInstance()->setTransform(tf_msg, "easynav", false);
@@ -538,9 +534,11 @@ AMCLLocalizer::publishTF(const tf2::Transform & map2bf)
 void
 AMCLLocalizer::publishParticles()
 {
+  const auto & tf_info = RTTFBuffer::getInstance()->get_tf_info();
+
   geometry_msgs::msg::PoseArray array_msg;
-  array_msg.header.stamp = get_node()->now();
-  array_msg.header.frame_id = get_tf_prefix() + "map";
+  array_msg.header.stamp = last_input_time_;
+  array_msg.header.frame_id = tf_info.map_frame;
 
   array_msg.poses.reserve(particles_.size());
   for (const auto & p : particles_) {
@@ -599,9 +597,11 @@ AMCLLocalizer::publishEstimatedPose(const tf2::Transform & est_pose)
   tf2::Matrix3x3 cov = computeCovariance(particles_, 0, N_top, mean);
   double yaw_variance = computeYawVariance(particles_, 0, N_top);
 
+  const auto & tf_info = RTTFBuffer::getInstance()->get_tf_info();
+
   geometry_msgs::msg::PoseWithCovarianceStamped msg;
-  msg.header.stamp = get_node()->now();
-  msg.header.frame_id = get_tf_prefix() + "map";
+  msg.header.stamp = last_input_time_;
+  msg.header.frame_id = tf_info.map_frame;
 
   msg.pose.pose.position.x = mean.x();
   msg.pose.pose.position.y = mean.y();
@@ -623,9 +623,10 @@ AMCLLocalizer::get_pose()
 {
   nav_msgs::msg::Odometry odom_msg;
 
-  odom_msg.header.stamp = get_node()->now();
-  odom_msg.header.frame_id = get_tf_prefix() + "map";
-  odom_msg.child_frame_id = get_tf_prefix() + "base_footprint";
+  odom_msg.header.stamp = last_input_time_;
+  const auto & tf_info = RTTFBuffer::getInstance()->get_tf_info();
+  odom_msg.header.frame_id = tf_info.map_frame;
+  odom_msg.child_frame_id = tf_info.robot_frame;
 
   tf2::Transform est_pose = getEstimatedPose();
 
