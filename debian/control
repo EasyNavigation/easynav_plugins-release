@@ -1,0 +1,12 @@
+Source: ros-kilted-easynav-vff-controller
+Section: misc
+Priority: optional
+Maintainer: Jose Miguel Guerrero Hernandez <josemiguel.guerrero@urjc.es>
+Build-Depends: debhelper (>= 9.0.0), ros-kilted-ament-cmake, ros-kilted-ament-lint-auto <!nocheck>, ros-kilted-ament-lint-common <!nocheck>, ros-kilted-easynav-common, ros-kilted-easynav-core, ros-kilted-nav-msgs, ros-kilted-pcl-ros, ros-kilted-pluginlib, ros-kilted-rclcpp, ros-kilted-rclcpp-lifecycle, ros-kilted-visualization-msgs, ros-kilted-ros-workspace
+Homepage: 
+Standards-Version: 3.9.2
+
+Package: ros-kilted-easynav-vff-controller
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, ros-kilted-easynav-common, ros-kilted-easynav-core, ros-kilted-nav-msgs, ros-kilted-pcl-ros, ros-kilted-pluginlib, ros-kilted-rclcpp, ros-kilted-rclcpp-lifecycle, ros-kilted-visualization-msgs, ros-kilted-ros-workspace
+Description: Easy Navigation: VFF Controller package.
