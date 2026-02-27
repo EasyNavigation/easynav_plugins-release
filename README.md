@@ -1,69 +1,69 @@
-# easynav_costmap_planner
+# EasyNav Plugins
 
-[![ROS 2: kilted](https://img.shields.io/badge/ROS%202-kilted-blue)](#) [![ROS 2: rolling](https://img.shields.io/badge/ROS%202-rolling-blue)](#)
+[![ROS 2: kilted](https://img.shields.io/badge/ROS%202-kilted-blue)](#)
+[![ROS 2: rolling](https://img.shields.io/badge/ROS%202-rolling-blue)](#)
+
+[![rolling](https://github.com/EasyNavigation/easynav_plugins/actions/workflows/rolling.yaml/badge.svg)](https://github.com/EasyNavigation/easynav_plugins/actions/workflows/rolling.yaml)
+[![kilted](https://github.com/EasyNavigation/easynav_plugins/actions/workflows/kilted.yaml/badge.svg)](https://github.com/EasyNavigation/easynav_plugins/actions/workflows/kilted.yaml)
 
 ## Description
-A planner plugin implementing a standard **A\*** path planner over a `Costmap2D` representation. It reads the dynamic costmap, goal list, and robot pose from NavState and publishes a computed path as a `nav_msgs/Path` message.
+**EasyNav Plugins** provides the official collection of plugins for the [Easy Navigation (EasyNav)](https://github.com/EasyNavigation) framework.  
+These plugins extend the navigation core with planners, controllers, map managers, and localizers compatible with ROS 2.
 
-## Authors and Maintainers
-- **Authors:** Intelligent Robotics Lab  
-- **Maintainers:** Francisco Martín Rico <fmrico@gmail.com>
-
-## Supported ROS 2 Distributions
-| Distribution | Status |
-|---|---|
-| kilted | ![kilted](https://img.shields.io/badge/kilted-supported-brightgreen) |
-| rolling | ![rolling](https://img.shields.io/badge/rolling-supported-brightgreen) |
-
-## Plugin (pluginlib)
-- **Plugin Name:** `easynav_costmap_planner/CostmapPlanner`
-- **Type:** `easynav::CostmapPlanner`
-- **Base Class:** `easynav::PlannerMethodBase`
-- **Library:** `easynav_costmap_planner`
-- **Description:** A default Costmap2D-based A* path planner implementation.
+Each plugin resides in its own ROS 2 package and is registered via `pluginlib`, allowing dynamic loading at runtime.
 
 ---
 
-## Parameters
-All parameters are declared under the plugin namespace, i.e., `/<node_fqn>/easynav_costmap_planner/CostmapPlanner/...`.
+## Repository Structure
 
-| Name | Type | Default | Description |
-|---|---|---:|---|
-| `<plugin>.cost_factor` | `double` | `2.0` | Scaling factor applied to costmap cell values to compute traversal costs. |
-| `<plugin>.inflation_penalty` | `double` | `5.0` | Extra penalty added to inflated/near-obstacle cells to push paths away from obstacles. |
-| `<plugin>.cost_axial` | `double` | `1.0` | Base movement cost for axial (N/E/S/W) steps. |
-| `<plugin>.cost_diagonal` | `double` | `1.41` | Base movement cost for diagonal steps (approx. √2). |
-| `<plugin>.continuous_replan` | `bool` | `true` | If `true`, re-plans continuously as the map/goal changes; if `false`, plans once per request. |
+### 🧭 Planners
+Path planning plugins implementing A*, costmap, or NavMap–based methods.
 
----
-
-## Interfaces (Topics and Services)
-
-### Publications
-| Direction | Topic | Type | Purpose | QoS |
-|---|---|---|---|---|
-| Publisher | `<node_fqn>/<plugin>/path` | `nav_msgs/msg/Path` | Publishes the computed path from start to goal. | `depth=10` |
-
-This plugin does not create subscriptions or services directly; it reads inputs via NavState.
-
----
-
-## NavState Keys
-| Key | Type | Access | Notes |
-|---|---|---|---|
-| `goals` | `nav_msgs::msg::Goals` | **Read** | Goal list used as planner targets. |
-| `map.dynamic` | `Costmap2D` | **Read** | Dynamic costmap used for A* search. |
-| `robot_pose` | `nav_msgs::msg::Odometry` | **Read** | Current robot pose used as the start position. |
-| `path` | `nav_msgs::msg::Path` | **Write** | Output path to follow. |
-
----
-
-## TF Frames
-| Role | Transform | Notes |
+| Package | Description | Link |
 |---|---|---|
-| Reads | `map -> base_footprint` | Requires consistent frames between the costmap and the published path. |
+| `easynav_costmap_planner` | A* planner over `Costmap2D`. | [README](./planners/easynav_costmap_planner/README.md) |
+| `easynav_simple_planner` | Simple A* planner for `SimpleMap`. | [README](./planners/easynav_simple_planner/README.md) |
+| `easynav_navmap_planner` | A* planner over a NavMap mesh. | [README](./planners/easynav_navmap_planner/README.md) |
+
+---
+
+### ⚙️ Controllers
+Motion controllers for trajectory tracking and reactive behaviors.
+
+| Package | Description | Link |
+|---|---|---|
+| `easynav_vff_controller` | Vector Field Force (VFF) reactive controller. | [README](./controllers/easynav_vff_controller/README.md) |
+| `easynav_mppi_controller` | Model Predictive Path Integral (MPPI) controller. | [README](./controllers/easynav_mppi_controller/README.md) |
+| `easynav_simple_controller` | Simple proportional controller for testing. | [README](./controllers/easynav_simple_controller/README.md) |
+| `easynav_serest_controller` | SeReST (Safe Reactive Steering) controller. | [README](./controllers/easynav_serest_controller/README.md) |
+
+---
+
+### 🗺️ Maps Managers
+Map management plugins that provide, update, and store different environment representations.
+
+| Package | Description | Link |
+|---|---|---|
+| `easynav_navmap_maps_manager` | Manages NavMap mesh layers. | [README](./maps_managers/easynav_navmap_maps_manager/README.md) |
+| `easynav_bonxai_maps_manager` | Manages Bonxai probabilistic voxel maps. | [README](./maps_managers/easynav_bonxai_maps_manager/README.md) |
+| `easynav_octomap_maps_manager` | Manages OctoMap 3D occupancy trees. | [README](./maps_managers/easynav_octomap_maps_manager/README.md) |
+| `easynav_costmap_maps_manager` | Manages Costmap2D layers with filters. | [README](./maps_managers/easynav_costmap_maps_manager/README.md) |
+| `easynav_simple_maps_manager` | Minimal example map manager (SimpleMap). | [README](./maps_managers/easynav_simple_maps_manager/README.md) |
+
+---
+
+### 📍 Localizers
+Localization plugins based on different map types and sensors.
+
+| Package | Description | Link |
+|---|---|---|
+| `easynav_gps_localizer` | GPS-based localizer for outdoor navigation. | [README](./localizers/easynav_gps_localizer/README.md) |
+| `easynav_simple_localizer` | Basic localizer for SimpleMap–based setups. | [README](./localizers/easynav_simple_localizer/README.md) |
+| `easynav_navmap_localizer` | AMCL-like localizer operating on NavMap meshes. | [README](./localizers/easynav_navmap_localizer/README.md) |
+| `easynav_costmap_localizer` | AMCL-like localizer using Costmap2D. | [README](./localizers/easynav_costmap_localizer/README.md) |
 
 ---
 
 ## License
-GPL-3.0-only
+All packages in this repository are released under **GPL-3.0-only** unless stated otherwise in the individual package.
+
