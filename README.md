@@ -1,120 +1,78 @@
-# easynav_serest_controller
+# EasyNav Plugins
 
-[![ROS 2: kilted](https://img.shields.io/badge/ROS%202-kilted-blue)](#) [![ROS 2: rolling](https://img.shields.io/badge/ROS%202-rolling-blue)](#) [![ROS 2: jazzy](https://img.shields.io/badge/ROS%202-jazzy-blue)](#)
+[![Doxygen Deployment](https://github.com/EasyNavigation/easynav_plugins/actions/workflows/doxygen-doc.yml/badge.svg)](https://github.com/EasyNavigation/easynav_plugins/actions/workflows/doxygen-doc.yml)
+[![rolling](https://github.com/EasyNavigation/easynav_plugins/actions/workflows/rolling.yaml/badge.svg?branch=rolling)](https://github.com/EasyNavigation/easynav_plugins/actions/workflows/rolling.yaml)
+[![kilted](https://github.com/EasyNavigation/easynav_plugins/actions/workflows/kilted.yaml/badge.svg?branch=kilted)](https://github.com/EasyNavigation/easynav_plugins/actions/workflows/kilted.yaml)
+[![jazzy](https://github.com/EasyNavigation/easynav_plugins/actions/workflows/jazzy.yaml/badge.svg?branch=jazzy)](https://github.com/EasyNavigation/easynav_plugins/actions/workflows/jazzy.yaml)
+[![humble](https://github.com/EasyNavigation/easynav_plugins/actions/workflows/humble.yaml/badge.svg?branch=humble)](https://github.com/EasyNavigation/easynav_plugins/actions/workflows/humble.yaml)
 
+📋 Roadmap Project: [RoadMap](https://github.com/EasyNavigation/EasyNavigation/blob/rolling/ROADMAP.md)
 
 ## Description
 
-A SeReST (Smooth Error-Responsive Speed and Turning) controller for path tracking.
+**EasyNav Plugins** provides the official collection of plugins for the [Easy Navigation (EasyNav)](https://github.com/EasyNavigation) framework.  
+These plugins extend the navigation core with planners, controllers, map managers, and localizers compatible with ROS 2.
 
-## Authors and Maintainers
+Each plugin resides in its own ROS 2 package and is registered via `pluginlib`, allowing dynamic loading at runtime.
 
-- **Authors:** Intelligent Robotics Lab
-- **Maintainers:** Francisco Martín Rico <fmrico@gmail.com>
+---
 
-## Supported ROS 2 Distributions
+## Repository Structure
 
-| Distribution | Status |
-|---|---:|
-| humble | ![kilted](https://img.shields.io/badge/humble-supported-brightgreen) |
-| jazzy | ![jazzy](https://img.shields.io/badge/jazzy-supported-brightgreen) |
-| kilted | ![kilted](https://img.shields.io/badge/kilted-supported-brightgreen) |
-| rolling | ![rolling](https://img.shields.io/badge/rolling-supported-brightgreen) | 
-| jazzy | ![jazzy](https://img.shields.io/badge/jazzy-supported-brightgreen) |
+### 🧭 Planners
 
-## Plugin (pluginlib)
+Path planning plugins implementing A*, costmap, or NavMap–based methods.
 
-- **Plugin Name:** `easynav_serest_controller/SerestController`
-- **Type:** `easynav::SerestController`
-- **Base Class:** `easynav::ControllerMethodBase`
-- **Library:** `easynav_serest_controller`
-- **Description:** A SeReST (Smooth Error-Responsive Speed and Turning) controller for path tracking.
+| Package | Description | Link |
+|---|---|---|
+| `easynav_costmap_planner` | A* planner over `Costmap2D`. | [README](./planners/easynav_costmap_planner/README.md) |
+| `easynav_simple_planner` | Simple A* planner for `SimpleMap`. | [README](./planners/easynav_simple_planner/README.md) |
+| `easynav_navmap_planner` | A* planner over a NavMap mesh. | [README](./planners/easynav_navmap_planner/README.md) |
 
-## Parameters
+---
 
-All parameters are declared under the plugin namespace, i.e., `/<node_fqn>/easynav_serest_controller/SerestController/...`.
+### ⚙️ Controllers
 
-> This plugin derives from [`easynav::ControllerMethodBase`](https://github.com/EasyNavigation/EasyNavigation/tree/rolling/easynav_core#easynavcontrollermethodbase).  \
-> See that section for shared collision-checking parameters and debug markers common to all controllers.
+Motion controllers for trajectory tracking and reactive behaviors.
 
-| Name | Type | Default | Description |
-|---|---|---:|---|
-| `<plugin>.a_acc` | `double` | `0.8` | Comfortable forward acceleration (m/s²). |
-| `<plugin>.a_brake` | `double` | `1.2` | Comfortable braking deceleration (m/s²). |
-| `<plugin>.a_lat_max` | `double` | `1.5` | Maximum lateral acceleration (m/s²). |
-| `<plugin>.a_lat_soft` | `double` | `1.1` | Soft lateral acceleration bound (m/s²). |
-| `<plugin>.allow_reverse` | `bool` | `false` | Allow reversing when beneficial. |
-| `<plugin>.apex_ey_des` | `double` | `0.05` | Desired lateral error at apex for shaping (m). |
-| `<plugin>.blend_base` | `double` | `0.6` | Base blending factor for curvature tracking. |
-| `<plugin>.blend_k_per_v` | `double` | `0.6` | Additional blending proportional to speed. |
-| `<plugin>.corner_boost_omega` | `double` | `0.8` | Omega boost when cornering. |
-| `<plugin>.corner_gain_eth` | `double` | `0.7` | Cornering gain for heading error. |
-| `<plugin>.corner_gain_ey` | `double` | `1.5` | Cornering gain for lateral error. |
-| `<plugin>.corner_gain_kappa` | `double` | `0.4` | Cornering gain for curvature error. |
-| `<plugin>.corner_guard_enable` | `bool` | `true` | Enable cornering guard logic. |
-| `<plugin>.corner_min_alpha` | `double` | `0.35` | Minimum blending near corners. |
-| `<plugin>.d0_margin` | `double` | `0.30` | Base obstacle clearance margin (m). |
-| `<plugin>.d_hard` | `double` | `0.20` | Hard-stop distance threshold (m). |
-| `<plugin>.dist_search_radius` | `double` | `2.0` | Search radius when matching to path (m). |
-| `<plugin>.ell` | `double` | `` | Lookahead distance (m). |
-| `<plugin>.eps` | `double` | `1e-3` | Small epsilon to avoid division by zero. |
-| `<plugin>.final_align_k` | `double` | `2.0` | Gain used during final alignment. |
-| `<plugin>.final_align_wmax` | `double` | `0.6` | Max angular speed during final alignment (rad/s). |
-| `<plugin>.goal_pos_tol` | `double` | `0.05` | Goal position tolerance (m). |
-| `<plugin>.goal_yaw_tol_deg` | `double` | `5.0` | Goal yaw tolerance (degrees). |
-| `<plugin>.k_s` | `double` | `` | Gain on progress along path (s). |
-| `<plugin>.k_s_share_max` | `double` | `0.5` | Max share of speed from s-progress term. |
-| `<plugin>.k_theta` | `double` | `` | Heading error gain. |
-| `<plugin>.k_y` | `double` | `` | Lateral error gain. |
-| `<plugin>.kappa_max` | `double` | `2.5` | Maximum allowed curvature (1/m). |
-| `<plugin>.max_angular_acc` | `double` | `2.0` | Angular acceleration limit (rad/s²). |
-| `<plugin>.max_angular_speed` | `double` | `1.5` | Angular speed limit (rad/s). |
-| `<plugin>.max_linear_acc` | `double` | `0.8` | Linear acceleration limit (m/s²). |
-| `<plugin>.max_linear_speed` | `double` | `0.6` | Speed limit (m/s). |
-| `<plugin>.slow_min_speed` | `double` | `0.03` | Minimum speed within slow zone (m/s). |
-| `<plugin>.slow_radius` | `double` | `0.60` | Radius to start slowing down near goal (m). |
-| `<plugin>.t_emerg` | `double` | `0.25` | Emergency stop time horizon (s). |
-| `<plugin>.tau_latency` | `double` | `0.10` | Actuation latency (s). |
-| `<plugin>.v_progress_min` | `double` | `0.05` | Minimum forward speed to ensure progress (m/s). |
-| `<plugin>.v_ref` | `double` | `0.6` | Nominal reference speed (m/s). |
+| Package | Description | Link |
+|---|---|---|
+| `easynav_vff_controller` | Vector Field Force (VFF) reactive controller. | [README](./controllers/easynav_vff_controller/README.md) |
+| `easynav_mppi_controller` | Model Predictive Path Integral (MPPI) controller. | [README](./controllers/easynav_mppi_controller/README.md) |
+| `easynav_simple_controller` | Simple proportional controller for testing. | [README](./controllers/easynav_simple_controller/README.md) |
+| `easynav_serest_controller` | SeReST (Safe Reactive Steering) controller. | [README](./controllers/easynav_serest_controller/README.md) |
+| `easynav_mpc_controller` | Model Predictive Controller (MPC). | [README](./controllers/easynav_mpc_controller/README.md) |
 
-## Interfaces (Topics and Services)
+---
 
-### Subscriptions and Publications
+### 🗺️ Maps Managers
 
-This controller communicates through `NavState` (no direct ROS topics in this plugin).
+Map management plugins that provide, update, and store different environment representations.
 
-### Services
+| Package | Description | Link |
+|---|---|---|
+| `easynav_navmap_maps_manager` | Manages NavMap mesh layers. | [README](./maps_managers/easynav_navmap_maps_manager/README.md) |
+| `easynav_bonxai_maps_manager` | Manages Bonxai probabilistic voxel maps. | [README](./maps_managers/easynav_bonxai_maps_manager/README.md) |
+| `easynav_octomap_maps_manager` | Manages OctoMap 3D occupancy trees. | [README](./maps_managers/easynav_octomap_maps_manager/README.md) |
+| `easynav_costmap_maps_manager` | Manages Costmap2D layers with filters. | [README](./maps_managers/easynav_costmap_maps_manager/README.md) |
+| `easynav_simple_maps_manager` | Minimal example map manager (SimpleMap). | [README](./maps_managers/easynav_simple_maps_manager/README.md) |
 
-This package does not create service servers or clients.
+---
 
-## NavState Keys
+### 📍 Localizers
 
-| Key | Type | Access | Notes |
-|---|---|---|---|
-| `path` | `nav_msgs::msg::Path` | **Read** | Reference path. |
-| `robot_pose` | `nav_msgs::msg::Odometry` | **Read** | Robot odometry. |
-| `points` | `PointPerceptions` | **Read** | Obstacle point cloud(s). |
-| `closest_obstacle_distance` | `double` | **Read** | Precomputed dynamic obstacle metric. |
-| `cmd_vel` | `geometry_msgs::msg::TwistStamped` | **Write** | Commanded velocity. |
-| `serest.debug.e_y` | `double/int` | **Write** | Debug metric |
-| `serest.debug.e_theta` | `double/int` | **Write** | Debug metric |
-| `serest.debug.kappa_hat` | `double/int` | **Write** | Debug metric |
-| `serest.debug.d_closest` | `double/int` | **Write** | Debug metric |
-| `serest.debug.v_safe` | `double/int` | **Write** | Debug metric |
-| `serest.debug.v_curv` | `double/int` | **Write** | Debug metric |
-| `serest.debug.alpha` | `double/int` | **Write** | Debug metric |
-| `serest.debug.allow_reverse` | `double/int` | **Write** | Debug metric |
-| `serest.debug.dist_to_end` | `double/int` | **Write** | Debug metric |
-| `serest.debug.goal.dist_xy` | `double/int` | **Write** | Debug metric |
-| `serest.debug.goal.gamma_slow` | `double/int` | **Write** | Debug metric |
-| `serest.debug.goal.in_final_align` | `double/int` | **Write** | Debug metric |
-| `serest.debug.goal.arrived` | `double/int` | **Write** | Debug metric |
+Localization plugins based on different map types and sensors.
 
-## TF Frames
+| Package | Description | Link |
+|---|---|---|
+| `easynav_gps_localizer` | GPS-based localizer for outdoor navigation. | [README](./localizers/easynav_gps_localizer/README.md) |
+| `easynav_simple_localizer` | Basic localizer for SimpleMap–based setups. | [README](./localizers/easynav_simple_localizer/README.md) |
+| `easynav_navmap_localizer` | AMCL-like localizer operating on NavMap meshes. | [README](./localizers/easynav_navmap_localizer/README.md) |
+| `easynav_costmap_localizer` | AMCL-like localizer using Costmap2D. | [README](./localizers/easynav_costmap_localizer/README.md) |
+| `easynav_fusion_localizer` | Multi-sensor fusion localizer (e.g., GPS + odometry + map). | [README](./localizers/easynav_fusion_localizer/README.md) |
 
-This controller reads pose from `nav_msgs/Odometry` (NavState key `robot_pose`). TF is not directly used in this plugin.
+---
 
 ## License
 
-Apache-2.0
+All packages in this repository are released under **Apache-2.0** unless stated otherwise in the individual package.
