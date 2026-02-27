@@ -1,0 +1,12 @@
+Source: ros-jazzy-easynav-routes-maps-manager
+Section: misc
+Priority: optional
+Maintainer: Francisco Martín Rico <fmrico@gmail.com>
+Build-Depends: debhelper (>= 9.0.0), libyaml-cpp-dev, ros-jazzy-ament-cmake, ros-jazzy-ament-cmake-gtest <!nocheck>, ros-jazzy-ament-index-cpp, ros-jazzy-ament-lint-auto <!nocheck>, ros-jazzy-ament-lint-common <!nocheck>, ros-jazzy-easynav-common, ros-jazzy-easynav-core, ros-jazzy-easynav-costmap-common, ros-jazzy-geometry-msgs, ros-jazzy-interactive-markers, ros-jazzy-nav-msgs, ros-jazzy-pluginlib, ros-jazzy-std-srvs, ros-jazzy-tf2-ros, ros-jazzy-visualization-msgs, ros-jazzy-yaets, ros-jazzy-ros-workspace
+Homepage: 
+Standards-Version: 3.9.2
+
+Package: ros-jazzy-easynav-routes-maps-manager
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, libyaml-cpp-dev, ros-jazzy-ament-index-cpp, ros-jazzy-easynav-common, ros-jazzy-easynav-core, ros-jazzy-easynav-costmap-common, ros-jazzy-geometry-msgs, ros-jazzy-interactive-markers, ros-jazzy-nav-msgs, ros-jazzy-pluginlib, ros-jazzy-std-srvs, ros-jazzy-tf2-ros, ros-jazzy-visualization-msgs, ros-jazzy-yaets, ros-jazzy-ros-workspace
+Description: Easy Navigation: Routes MapsManager package.
