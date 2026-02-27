@@ -1,78 +1,165 @@
-# EasyNav Plugins
-
-[![Doxygen Deployment](https://github.com/EasyNavigation/easynav_plugins/actions/workflows/doxygen-doc.yml/badge.svg)](https://github.com/EasyNavigation/easynav_plugins/actions/workflows/doxygen-doc.yml)
-[![rolling](https://github.com/EasyNavigation/easynav_plugins/actions/workflows/rolling.yaml/badge.svg?branch=rolling)](https://github.com/EasyNavigation/easynav_plugins/actions/workflows/rolling.yaml)
-[![kilted](https://github.com/EasyNavigation/easynav_plugins/actions/workflows/kilted.yaml/badge.svg?branch=kilted)](https://github.com/EasyNavigation/easynav_plugins/actions/workflows/kilted.yaml)
-[![jazzy](https://github.com/EasyNavigation/easynav_plugins/actions/workflows/jazzy.yaml/badge.svg?branch=jazzy)](https://github.com/EasyNavigation/easynav_plugins/actions/workflows/jazzy.yaml)
-[![humble](https://github.com/EasyNavigation/easynav_plugins/actions/workflows/humble.yaml/badge.svg?branch=humble)](https://github.com/EasyNavigation/easynav_plugins/actions/workflows/humble.yaml)
-
-📋 Roadmap Project: [RoadMap](https://github.com/EasyNavigation/EasyNavigation/blob/rolling/ROADMAP.md)
+# easynav_costmap_maps_manager
 
 ## Description
 
-**EasyNav Plugins** provides the official collection of plugins for the [Easy Navigation (EasyNav)](https://github.com/EasyNavigation) framework.  
-These plugins extend the navigation core with planners, controllers, map managers, and localizers compatible with ROS 2.
+Maps Manager that maintains 2D costmaps (static and dynamic), supports filter plugins (such as inflation and obstacle filters), and exposes maps through ROS topics and NavState integration.
 
-Each plugin resides in its own ROS 2 package and is registered via `pluginlib`, allowing dynamic loading at runtime.
+At the core of this stack lies the Costmap2D data structure. `Costmap2D` extends the binary occupancy grid into a graded cost representation with values in the range [0–255]:
 
----
+- 0: Free space, no cost to traverse.
+- 1–252: Gradual cost values, representing increasing difficulty or proximity to obstacles.
+- 253: “Near obstacle” (inscribed obstacle) cost, traversal strongly discouraged.
+- 254: Lethal obstacle, occupied cell.
+- 255: Unknown space.
 
-## Repository Structure
+## Authors and Maintainers
 
-### 🧭 Planners
+- **Authors:** Intelligent Robotics Lab  
+- **Maintainers:** Francisco Martín Rico <fmrico@gmail.com>
 
-Path planning plugins implementing A*, costmap, or NavMap–based methods.
+## Supported ROS 2 Distributions
 
-| Package | Description | Link |
-|---|---|---|
-| `easynav_costmap_planner` | A* planner over `Costmap2D`. | [README](./planners/easynav_costmap_planner/README.md) |
-| `easynav_simple_planner` | Simple A* planner for `SimpleMap`. | [README](./planners/easynav_simple_planner/README.md) |
-| `easynav_navmap_planner` | A* planner over a NavMap mesh. | [README](./planners/easynav_navmap_planner/README.md) |
+| Distribution | Status |
+|---|---|
+| humble | ![kilted](https://img.shields.io/badge/humble-supported-brightgreen) |
+| jazzy | ![kilted](https://img.shields.io/badge/jazzy-supported-brightgreen) |
+| kilted | ![kilted](https://img.shields.io/badge/kilted-supported-brightgreen) |
+| rolling | ![rolling](https://img.shields.io/badge/rolling-supported-brightgreen) |
 
----
+## Plugin (pluginlib)
 
-### ⚙️ Controllers
-
-Motion controllers for trajectory tracking and reactive behaviors.
-
-| Package | Description | Link |
-|---|---|---|
-| `easynav_vff_controller` | Vector Field Force (VFF) reactive controller. | [README](./controllers/easynav_vff_controller/README.md) |
-| `easynav_mppi_controller` | Model Predictive Path Integral (MPPI) controller. | [README](./controllers/easynav_mppi_controller/README.md) |
-| `easynav_simple_controller` | Simple proportional controller for testing. | [README](./controllers/easynav_simple_controller/README.md) |
-| `easynav_serest_controller` | SeReST (Safe Reactive Steering) controller. | [README](./controllers/easynav_serest_controller/README.md) |
-| `easynav_mpc_controller` | Model Predictive Controller (MPC). | [README](./controllers/easynav_mpc_controller/README.md) |
-
----
-
-### 🗺️ Maps Managers
-
-Map management plugins that provide, update, and store different environment representations.
-
-| Package | Description | Link |
-|---|---|---|
-| `easynav_navmap_maps_manager` | Manages NavMap mesh layers. | [README](./maps_managers/easynav_navmap_maps_manager/README.md) |
-| `easynav_bonxai_maps_manager` | Manages Bonxai probabilistic voxel maps. | [README](./maps_managers/easynav_bonxai_maps_manager/README.md) |
-| `easynav_octomap_maps_manager` | Manages OctoMap 3D occupancy trees. | [README](./maps_managers/easynav_octomap_maps_manager/README.md) |
-| `easynav_costmap_maps_manager` | Manages Costmap2D layers with filters. | [README](./maps_managers/easynav_costmap_maps_manager/README.md) |
-| `easynav_simple_maps_manager` | Minimal example map manager (SimpleMap). | [README](./maps_managers/easynav_simple_maps_manager/README.md) |
+- **Plugin Name:** `easynav_costmap_maps_manager/CostmapMapsManager`
+- **Type:** `easynav::CostmapMapsManager`
+- **Base Class:** `easynav::MapsManagerBase`
+- **Library:** `easynav_costmap_maps_manager`
+- **Description:** Maintains a Costmap2D instance and manages map loading, updates, and filtering operations.
 
 ---
 
-### 📍 Localizers
+## Parameters
 
-Localization plugins based on different map types and sensors.
+### Plugin Parameters (namespace: `/<node_fqn>/easynav_costmap_maps_manager/CostmapMapsManager/...`)
 
-| Package | Description | Link |
+| Name | Type | Default | Description |
+|---|---|---:|---|
+| `<plugin>.package` | `string` | `""` | Package name used to resolve relative map paths via `ament_index`. |
+| `<plugin>.map_path_file` | `string` | `""` | Relative path (inside the package) to a ROS 1–style YAML map (with `image`, `resolution`, `origin`, etc.). |
+| `<plugin>.filters` | `string[]` | `[]` | List of filter identifiers to be instantiated (see section below). |
+| `<plugin>.<filter>.plugin` | `string` | `""` | Type of filter plugin (e.g., `easynav_costmap_maps_manager/InflationFilter`). |
+
+---
+
+### Filter Plugins
+
+Each entry in `<plugin>.filters` defines a sub-namespace `<plugin>.<filter>` with at least the key `plugin`, plus any filter-specific parameters.
+
+#### **ObstacleFilter**
+
+- **Plugin Name:** `easynav_costmap_maps_manager/ObstacleFilter`
+- **Type:** `easynav::ObstacleFilter`
+- **Description:**  
+  Detects occupied cells from input point clouds (`points` key in `NavState`) and marks them as `LETHAL_OBSTACLE` in the dynamic costmap.  
+  The filter fuses incoming 3D points into the map frame, downsamples them to the costmap resolution, filters out ground-level points (z < 0.1 m), and sets corresponding cells to lethal cost. Additionally, it computes and stores bounding box (`ObstacleBounds`) of updated obstacles to enable efficient incremental inflation.
+
+**Parameters:**
+
+| Parameter | Type | Default | Description |
+|---|---|---:|---|
+| _(None)_ | — | — | This filter does not declare additional ROS parameters beyond `plugin`. Downsampling resolution and frame fusion use the costmap's own resolution and `map` frame. |
+
+**NavState Keys:**
+
+| Key | Type | Access | Description |
+|---|---|---|---|
+| `points` | `sensor_msgs::msg::PointCloud2` | **Read** | Input point clouds to detect obstacles. |
+| `map.dynamic.filtered` | `Costmap2D` | **Write** | Marks cells as `LETHAL_OBSTACLE` (254). |
+| `map.dynamic.obstacle_bounds` | `ObstacleBounds` | **Write** | Bounding box of updated obstacles for incremental inflation. |
+
+#### **InflationFilter**
+
+- **Plugin Name:** `easynav_costmap_maps_manager/InflationFilter`
+- **Type:** `easynav::InflationFilter`
+- **Description:**  
+  Expands obstacle information in the costmap by assigning graded costs around `LETHAL_OBSTACLE` cells based on distance. Uses a breadth-first wavefront propagation algorithm (distance bins) to efficiently inflate obstacles up to `inflation_radius`.  
+  The filter reads both the static map and the dynamic filtered map, applies inflation to each, and merges results. If `ObstacleBounds` is available in `NavState`, inflation is restricted to the updated region for performance.
+
+**Parameters:**
+
+| Parameter | Type | Default | Description |
+|---|---|---:|---|
+| `<plugin>.inflation_radius` | `double` | `0.3` | Maximum inflation distance (m) from obstacles. Cells farther than this receive no inflation cost. |
+| `<plugin>.inscribed_radius` | `double` | `0.25` | Radius of the inscribed zone (m). Cells within this distance of an obstacle are marked with high constant cost (`INSCRIBED_INFLATED_OBSTACLE`, value 253) before exponential decay begins. |
+| `<plugin>.cost_scaling_factor` | `double` | `3.0` | Exponential decay rate controlling how quickly cost decreases with distance beyond the inscribed radius. Higher values produce steeper cost gradients. |
+
+**NavState Keys:**
+
+| Key | Type | Access | Description |
+|---|---|---|---|
+| `map.static` | `Costmap2D` | **Read** | Static costmap to inflate. |
+| `map.dynamic.filtered` | `Costmap2D` | **Read/Write** | Dynamic costmap input and output after inflation. |
+| `map.dynamic.obstacle_bounds` | `ObstacleBounds` | **Read** (optional) | Restricts inflation to updated region for performance. |
+
+**Cost Model:**  
+Uses exponential decay: `cost = exp(-cost_scaling_factor * (distance - inscribed_radius)) * 253` for distances beyond inscribed radius.
+
+### Example Configuration
+
+```yaml
+maps_manager_node:
+  ros__parameters:
+    map_types: [costmap]
+    costmap:
+      plugin: easynav_costmap_maps_manager/CostmapMapsManager
+      package: my_maps_pkg
+      map_path_file: maps/warehouse.yaml
+      filters: [inflation, obstacles]
+      inflation:
+        plugin: easynav_costmap_maps_manager/InflationFilter
+        inflation_radius: 0.3         # default in code
+        cost_scaling_factor: 3.0      # default in code
+      obstacles:
+        plugin: easynav_costmap_maps_manager/ObstacleFilter
+```
+
+---
+
+## Interfaces (Topics and Services)
+
+### Subscriptions and Publications
+
+| Direction | Topic | Type | Purpose | QoS |
+|---|---|---|---|---|
+| Subscription | `<node_fqn>/<plugin>/incoming_map` | `nav_msgs/msg/OccupancyGrid` | Input occupancy map used to update the dynamic map. | `depth=1, transient_local, reliable` |
+| Publisher | `<node_fqn>/<plugin>/map` | `nav_msgs/msg/OccupancyGrid` | Publishes the static costmap. | `depth=1` |
+| Publisher | `<node_fqn>/<plugin>/dynamic_map` | `nav_msgs/msg/OccupancyGrid` | Publishes the dynamic (live) costmap. | `depth=100` |
+
+### Services
+
+| Direction | Service | Type | Purpose |
+|---|---|---|---|
+| Service Server | `<node_fqn>/<plugin>/savemap` | `std_srvs/srv/Trigger` | Saves the current costmap(s) to disk. |
+
+---
+
+## NavState Keys
+
+| Key | Type | Access | Notes |
+|---|---|---|---|
+| `map.static` | `Costmap2D` | **Write** | Static map loaded from YAML. |
+| `map.dynamic` | `Costmap2D` | **Write** | Dynamic map after applying filters. |
+| `map.dynamic.filtered` | `Costmap2D` | **Read** | Previously filtered map used as input if available. |
+| `map.dynamic.obstacle_bounds` | `ObstacleBounds` | **Read** | Bounding box of updated obstacles (used to limit inflation region). |
+
+---
+
+## TF Frames
+
+| Role | Transform | Notes |
 |---|---|---|
-| `easynav_gps_localizer` | GPS-based localizer for outdoor navigation. | [README](./localizers/easynav_gps_localizer/README.md) |
-| `easynav_simple_localizer` | Basic localizer for SimpleMap–based setups. | [README](./localizers/easynav_simple_localizer/README.md) |
-| `easynav_navmap_localizer` | AMCL-like localizer operating on NavMap meshes. | [README](./localizers/easynav_navmap_localizer/README.md) |
-| `easynav_costmap_localizer` | AMCL-like localizer using Costmap2D. | [README](./localizers/easynav_costmap_localizer/README.md) |
-| `easynav_fusion_localizer` | Multi-sensor fusion localizer (e.g., GPS + odometry + map). | [README](./localizers/easynav_fusion_localizer/README.md) |
+| Publishes | — | This manager does not broadcast TF; costmaps use their internal `frame_id`. |
 
 ---
 
 ## License
 
-All packages in this repository are released under **Apache-2.0** unless stated otherwise in the individual package.
+Apache-2.0
