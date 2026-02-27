@@ -13,6 +13,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+
 #include <string>
 
 #include "easynav_costmap_common/costmap_2d.hpp"
@@ -54,7 +55,7 @@ ObstacleFilter::update(NavState & nav_state)
 
   auto view = PointPerceptionsOpsView(perceptions);
   view.downsample(dynamic_map.getResolution())
-  .fuse(tf_info.robot_frame)
+  .fuse(tf_info.map_frame)
   .filter({NAN, NAN, 0.1}, {NAN, NAN, NAN});
 
   const auto & fused = view.as_points();

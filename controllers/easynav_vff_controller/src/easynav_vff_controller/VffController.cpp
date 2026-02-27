@@ -60,7 +60,7 @@ void VffController::on_initialize()
 
   // Initialize the odometry message
   cmd_vel_.header.stamp = node->now();
-  cmd_vel_.header.frame_id = tf_info.map_frame;
+  cmd_vel_.header.frame_id = tf_info.robot_frame;
   cmd_vel_.twist.linear.x = 0.0;
   cmd_vel_.twist.linear.y = 0.0;
   cmd_vel_.twist.linear.z = 0.0;
@@ -258,7 +258,7 @@ void VffController::update_rt(NavState & nav_state)
     auto fused =
       PointPerceptionsOpsView(perceptions)
       .filter({-10.0, -10.0, -10.0}, {10.0, 10.0, 10.0})
-      .fuse(tf_info.map_frame)
+      .fuse(tf_info.robot_frame)
       .filter({obstacle_detection_x_min_, obstacle_detection_y_min_, obstacle_detection_z_min_},
         {obstacle_detection_x_max_, obstacle_detection_y_max_,
           obstacle_detection_z_max_})
