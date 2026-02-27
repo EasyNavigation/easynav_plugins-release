@@ -1,66 +1,69 @@
-# easynav_bonxai_maps_manager
+# EasyNav Plugins
 
-[![ROS 2: kilted](https://img.shields.io/badge/ROS%202-kilted-blue)](#) [![ROS 2: rolling](https://img.shields.io/badge/ROS%202-rolling-blue)](#)
+[![ROS 2: kilted](https://img.shields.io/badge/ROS%202-kilted-blue)](#)
+[![ROS 2: rolling](https://img.shields.io/badge/ROS%202-rolling-blue)](#)
+
+[![rolling](https://github.com/EasyNavigation/easynav_plugins/actions/workflows/rolling.yaml/badge.svg)](https://github.com/EasyNavigation/easynav_plugins/actions/workflows/rolling.yaml)
+[![kilted](https://github.com/EasyNavigation/easynav_plugins/actions/workflows/kilted.yaml/badge.svg)](https://github.com/EasyNavigation/easynav_plugins/actions/workflows/kilted.yaml)
 
 ## Description
-Maps Manager that maintains a [Bonxai](https://github.com/facontidavide/Bonxai) probabilistic 3D occupancy map and exposes it via ROS topics, NavState, and a save-map service.
+**EasyNav Plugins** provides the official collection of plugins for the [Easy Navigation (EasyNav)](https://github.com/EasyNavigation) framework.  
+These plugins extend the navigation core with planners, controllers, map managers, and localizers compatible with ROS 2.
 
-## Authors and Maintainers
-- **Authors:** Intelligent Robotics Lab
-- **Maintainers:** Francisco Martín Rico <fmrico@gmail.com>
+Each plugin resides in its own ROS 2 package and is registered via `pluginlib`, allowing dynamic loading at runtime.
 
-## Supported ROS 2 Distributions
-| Distribution | Status |
-|---|---|
-| kilted | ![kilted](https://img.shields.io/badge/kilted-supported-brightgreen) |
-| rolling | ![rolling](https://img.shields.io/badge/rolling-supported-brightgreen) |
+---
 
-## Plugin (pluginlib)
-- **Plugin Name:** `easynav_bonxai_maps_manager/BonxaiMapsManager`
-- **Type:** `easynav_bonxai::BonxaiMapsManager`
-- **Base Class:** `easynav::MapsManagerBase`
-- **Library:** `easynav_bonxai_maps_manager`
-- **Description:** Maps Manager that maintains a Bonxai probabilistic 3D occupancy map and exposes it via ROS topics, NavState, and a save-map service.
+## Repository Structure
 
-## Parameters
+### 🧭 Planners
+Path planning plugins implementing A*, costmap, or NavMap–based methods.
 
-### Plugin Parameters (namespace: `/<node_fqn>/easynav_bonxai_maps_manager/BonxaiMapsManager/...`)
-| Name | Type | Default | Description |
-|---|---|---:|---|
-| `<plugin>.package` | `string` | `""` | Package name to resolve relative map paths via ament index. |
-| `<plugin>.bonxai_path_file` | `string` | `""` | Relative path (inside the package) to a PCD file with 3D points to build the Bonxai map. |
-| `<plugin>.occmap_path_file` | `string` | `""` | Relative path (inside the package) to a ROS-style YAML occupancy map to import. |
-| `<plugin>.resolution` | `double` | `0.3` | Voxel resolution for the Bonxai map (meters). |
-| `<plugin>.frame_id` | `string` | `"map"` | Frame ID stamped on published map messages. |
-
-
-## Interfaces (Topics and Services)
-
-### Subscriptions and Publications
-| Direction | Topic | Type | Purpose | QoS |
-|---|---|---|---|---|
-| Subscription | `<node_fqn>/<plugin>/incoming_pc2_map` | `sensor_msgs/msg/PointCloud2` | Input point cloud to build/update the Bonxai map. | QoS depth=100 |
-| Subscription | `<node_fqn>/<plugin>/incoming_occ_map` | `nav_msgs/msg/OccupancyGrid` | Input occupancy grid (YAML + PGM) to import into Bonxai. | QoS depth=1, transient_local, reliable |
-| Publisher | `<node_fqn>/<plugin>/map` | `sensor_msgs/msg/PointCloud2` | Published Bonxai map as a point cloud. | QoS depth=1, transient_local, reliable |
-
-
-### Services
-| Direction | Service | Type | Purpose |
-|---|---|---|---|
-| Service Server | `<node_fqn>/<plugin>/savemap` | `std_srvs/srv/Trigger` | Save current Bonxai map to disk. |
-
-
-## NavState Keys
-| Key | Type | Access | Notes |
-|---|---|---|---|
-| `map.bonxai` | `Bonxai::ProbabilisticMap` | **Write** | Stores the current Bonxai map instance. |
-
-
-## TF Frames
-| Role | Transform | Notes |
+| Package | Description | Link |
 |---|---|---|
-| Publishes | `—` | No TF broadcast; outputs use the configured frame_id. |
+| `easynav_costmap_planner` | A* planner over `Costmap2D`. | [README](./planners/easynav_costmap_planner/README.md) |
+| `easynav_simple_planner` | Simple A* planner for `SimpleMap`. | [README](./planners/easynav_simple_planner/README.md) |
+| `easynav_navmap_planner` | A* planner over a NavMap mesh. | [README](./planners/easynav_navmap_planner/README.md) |
 
+---
+
+### ⚙️ Controllers
+Motion controllers for trajectory tracking and reactive behaviors.
+
+| Package | Description | Link |
+|---|---|---|
+| `easynav_vff_controller` | Vector Field Force (VFF) reactive controller. | [README](./controllers/easynav_vff_controller/README.md) |
+| `easynav_mppi_controller` | Model Predictive Path Integral (MPPI) controller. | [README](./controllers/easynav_mppi_controller/README.md) |
+| `easynav_simple_controller` | Simple proportional controller for testing. | [README](./controllers/easynav_simple_controller/README.md) |
+| `easynav_serest_controller` | SeReST (Safe Reactive Steering) controller. | [README](./controllers/easynav_serest_controller/README.md) |
+
+---
+
+### 🗺️ Maps Managers
+Map management plugins that provide, update, and store different environment representations.
+
+| Package | Description | Link |
+|---|---|---|
+| `easynav_navmap_maps_manager` | Manages NavMap mesh layers. | [README](./maps_managers/easynav_navmap_maps_manager/README.md) |
+| `easynav_bonxai_maps_manager` | Manages Bonxai probabilistic voxel maps. | [README](./maps_managers/easynav_bonxai_maps_manager/README.md) |
+| `easynav_octomap_maps_manager` | Manages OctoMap 3D occupancy trees. | [README](./maps_managers/easynav_octomap_maps_manager/README.md) |
+| `easynav_costmap_maps_manager` | Manages Costmap2D layers with filters. | [README](./maps_managers/easynav_costmap_maps_manager/README.md) |
+| `easynav_simple_maps_manager` | Minimal example map manager (SimpleMap). | [README](./maps_managers/easynav_simple_maps_manager/README.md) |
+
+---
+
+### 📍 Localizers
+Localization plugins based on different map types and sensors.
+
+| Package | Description | Link |
+|---|---|---|
+| `easynav_gps_localizer` | GPS-based localizer for outdoor navigation. | [README](./localizers/easynav_gps_localizer/README.md) |
+| `easynav_simple_localizer` | Basic localizer for SimpleMap–based setups. | [README](./localizers/easynav_simple_localizer/README.md) |
+| `easynav_navmap_localizer` | AMCL-like localizer operating on NavMap meshes. | [README](./localizers/easynav_navmap_localizer/README.md) |
+| `easynav_costmap_localizer` | AMCL-like localizer using Costmap2D. | [README](./localizers/easynav_costmap_localizer/README.md) |
+
+---
 
 ## License
-GPL-3.0-only
+All packages in this repository are released under **GPL-3.0-only** unless stated otherwise in the individual package.
+
