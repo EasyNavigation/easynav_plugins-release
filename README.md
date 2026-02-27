@@ -1,78 +1,90 @@
-# EasyNav Plugins
-
-[![Doxygen Deployment](https://github.com/EasyNavigation/easynav_plugins/actions/workflows/doxygen-doc.yml/badge.svg)](https://github.com/EasyNavigation/easynav_plugins/actions/workflows/doxygen-doc.yml)
-[![rolling](https://github.com/EasyNavigation/easynav_plugins/actions/workflows/rolling.yaml/badge.svg?branch=rolling)](https://github.com/EasyNavigation/easynav_plugins/actions/workflows/rolling.yaml)
-[![kilted](https://github.com/EasyNavigation/easynav_plugins/actions/workflows/kilted.yaml/badge.svg?branch=kilted)](https://github.com/EasyNavigation/easynav_plugins/actions/workflows/kilted.yaml)
-[![jazzy](https://github.com/EasyNavigation/easynav_plugins/actions/workflows/jazzy.yaml/badge.svg?branch=jazzy)](https://github.com/EasyNavigation/easynav_plugins/actions/workflows/jazzy.yaml)
-[![humble](https://github.com/EasyNavigation/easynav_plugins/actions/workflows/humble.yaml/badge.svg?branch=humble)](https://github.com/EasyNavigation/easynav_plugins/actions/workflows/humble.yaml)
-
-📋 Roadmap Project: [RoadMap](https://github.com/EasyNavigation/EasyNavigation/blob/rolling/ROADMAP.md)
+# easynav_navmap_localizer
 
 ## Description
 
-**EasyNav Plugins** provides the official collection of plugins for the [Easy Navigation (EasyNav)](https://github.com/EasyNavigation) framework.  
-These plugins extend the navigation core with planners, controllers, map managers, and localizers compatible with ROS 2.
+Easy Navigation: nAVmAP Localizer package.
 
-Each plugin resides in its own ROS 2 package and is registered via `pluginlib`, allowing dynamic loading at runtime.
+## Authors and Maintainers
 
----
+- **Authors:** Intelligent Robotics Lab
+- **Maintainers:** Francisco Martín Rico <fmrico@gmail.com>
 
-## Repository Structure
+## Supported ROS 2 Distributions
 
-### 🧭 Planners
+| Distribution | Status |
+|---|---|
+| humble | ![kilted](https://img.shields.io/badge/humble-supported-brightgreen) |
+| jazzy | ![kilted](https://img.shields.io/badge/jazzy-supported-brightgreen) |
+| kilted | ![kilted](https://img.shields.io/badge/kilted-supported-brightgreen) |
+| rolling | ![rolling](https://img.shields.io/badge/rolling-supported-brightgreen) |
 
-Path planning plugins implementing A*, costmap, or NavMap–based methods.
+## Plugin (pluginlib)
 
-| Package | Description | Link |
+- **Plugin Name:** `easynav_navmap_localizer/AMCLLocalizer`
+- **Type:** `easynav::navmap::AMCLLocalizer`
+- **Base Class:** `easynav::LocalizerMethodBase`
+- **Library:** `easynav_navmap_localizer`
+- **Description:** A default "navmap" implementation for the AMCL localizer.
+
+## Parameters
+
+All parameters are declared under the plugin name namespace, i.e., `/<node_fqn>/easynav_navmap_localizer/AMCLLocalizer/...`.
+
+| Name | Type | Default | Description |
+|---|---|---:|---|
+| `<plugin>.num_particles` | `int` | `100` | Number of AMCL particles. |
+| `<plugin>.initial_pose.x` | `double` | `0.0` | Initial X position (m). |
+| `<plugin>.initial_pose.y` | `double` | `0.0` | Initial Y position (m). |
+| `<plugin>.initial_pose.yaw` | `double` | `0.0` | Initial yaw (rad). |
+| `<plugin>.initial_pose.std_dev_xy` | `double` | `0.5` | Std dev used to sample initial X/Y. |
+| `<plugin>.initial_pose.std_dev_yaw` | `double` | `0.5` | Std dev used to sample initial yaw. |
+| `<plugin>.reseed_freq` | `double` | `1.0` | Reseeding frequency (Hz). |
+| `<plugin>.noise_translation` | `double` | `0.01` | Translational noise factor. |
+| `<plugin>.noise_rotation` | `double` | `0.01` | Rotational noise factor. |
+| `<plugin>.noise_translation_to_rotation` | `double` | `0.01` | Translation-to-rotation noise coupling. |
+| `<plugin>.min_noise_xy` | `double` | `0.05` | Minimum XY noise (m). |
+| `<plugin>.min_noise_yaw` | `double` | `0.05` | Minimum yaw noise (rad). |
+| `<plugin>.compute_odom_from_tf` | `bool` | `false` | If true, read odometry from TF (odom->base_footprint) instead of /odom topic. |
+| `<plugin>.inflation_stddev` | `double` | `0.05` | Std dev used in occupancy inflation (m). |
+| `<plugin>.inflation_prob_min` | `double` | `0.01` | Minimum occupancy probability after inflation. |
+| `<plugin>.correct_max_points` | `int` | `1500` | Maximum points used per correction step (after downsampling). |
+| `<plugin>.weights_tau` | `double` | `0.7` | Exponential decay factor for particle weight smoothing. |
+| `<plugin>.top_keep_fraction` | `double` | `0.2` | Fraction of top particles to keep before reseeding. |
+| `<plugin>.downsampled_cloud_size` | `double` | `0.05` | Voxel size for point cloud downsampling (m). |
+
+## Interfaces (Topics and Services)
+
+### Subscriptions and Publications
+
+| Direction | Topic | Type | Purpose | QoS |
+|---|---|---|---|---|
+| Subscription | `/odom` | `nav_msgs/msg/Odometry` | Used only when `<plugin>.compute_odom_from_tf = false` | SensorDataQoS (reliable) |
+| Publisher | `<node_fqn>/<plugin>/particles` | `geometry_msgs/msg/PoseArray` | Publishes the current particle set | depth=10 |
+| Publisher | `<node_fqn>/<plugin>/pose` | `geometry_msgs/msg/PoseWithCovarianceStamped` | Publishes the estimated pose with covariance | depth=10 |
+
+### Services
+
+This package does not create service servers or clients.
+
+## NavState Keys
+
+| Key | Type | Access | Notes |
+|---|---|---|---|
+| `imu` | `IMUPerceptions` | **Read** | Used to get the latest IMU orientation when available. |
+| `points` | `PointPerceptions` | **Read** | 3D point cloud bundles used in the correction step. |
+| `map.navmap` | `::navmap::NavMap` | **Read** | Triangle mesh map providing surface geometry and elevation. |
+| `map.bonxai` | `Bonxai::ProbabilisticMap` | **Read** | Probabilistic occupancy map used for scoring. |
+| `map.bonxai.inflated` | `Bonxai::ProbabilisticMap` | **Write/Read** | Inflated map cached on first access for faster scoring. |
+| `robot_pose` | `nav_msgs::msg::Odometry` | **Write** | Estimated robot pose stored at the end of update/predict. |
+
+## TF Frames
+
+| Role | Transform | Notes |
 |---|---|---|
-| `easynav_costmap_planner` | A* planner over `Costmap2D`. | [README](./planners/easynav_costmap_planner/README.md) |
-| `easynav_simple_planner` | Simple A* planner for `SimpleMap`. | [README](./planners/easynav_simple_planner/README.md) |
-| `easynav_navmap_planner` | A* planner over a NavMap mesh. | [README](./planners/easynav_navmap_planner/README.md) |
-
----
-
-### ⚙️ Controllers
-
-Motion controllers for trajectory tracking and reactive behaviors.
-
-| Package | Description | Link |
-|---|---|---|
-| `easynav_vff_controller` | Vector Field Force (VFF) reactive controller. | [README](./controllers/easynav_vff_controller/README.md) |
-| `easynav_mppi_controller` | Model Predictive Path Integral (MPPI) controller. | [README](./controllers/easynav_mppi_controller/README.md) |
-| `easynav_simple_controller` | Simple proportional controller for testing. | [README](./controllers/easynav_simple_controller/README.md) |
-| `easynav_serest_controller` | SeReST (Safe Reactive Steering) controller. | [README](./controllers/easynav_serest_controller/README.md) |
-| `easynav_mpc_controller` | Model Predictive Controller (MPC). | [README](./controllers/easynav_mpc_controller/README.md) |
-
----
-
-### 🗺️ Maps Managers
-
-Map management plugins that provide, update, and store different environment representations.
-
-| Package | Description | Link |
-|---|---|---|
-| `easynav_navmap_maps_manager` | Manages NavMap mesh layers. | [README](./maps_managers/easynav_navmap_maps_manager/README.md) |
-| `easynav_bonxai_maps_manager` | Manages Bonxai probabilistic voxel maps. | [README](./maps_managers/easynav_bonxai_maps_manager/README.md) |
-| `easynav_octomap_maps_manager` | Manages OctoMap 3D occupancy trees. | [README](./maps_managers/easynav_octomap_maps_manager/README.md) |
-| `easynav_costmap_maps_manager` | Manages Costmap2D layers with filters. | [README](./maps_managers/easynav_costmap_maps_manager/README.md) |
-| `easynav_simple_maps_manager` | Minimal example map manager (SimpleMap). | [README](./maps_managers/easynav_simple_maps_manager/README.md) |
-
----
-
-### 📍 Localizers
-
-Localization plugins based on different map types and sensors.
-
-| Package | Description | Link |
-|---|---|---|
-| `easynav_gps_localizer` | GPS-based localizer for outdoor navigation. | [README](./localizers/easynav_gps_localizer/README.md) |
-| `easynav_simple_localizer` | Basic localizer for SimpleMap–based setups. | [README](./localizers/easynav_simple_localizer/README.md) |
-| `easynav_navmap_localizer` | AMCL-like localizer operating on NavMap meshes. | [README](./localizers/easynav_navmap_localizer/README.md) |
-| `easynav_costmap_localizer` | AMCL-like localizer using Costmap2D. | [README](./localizers/easynav_costmap_localizer/README.md) |
-| `easynav_fusion_localizer` | Multi-sensor fusion localizer (e.g., GPS + odometry + map). | [README](./localizers/easynav_fusion_localizer/README.md) |
-
----
+| Publishes | `map -> odom` | Broadcasts the global transform that aligns the odometry frame with the map frame. |
+| Requires | `odom -> base_footprint` | Required only when `<plugin>.compute_odom_from_tf = true` (read from TF). |
+| Requires | `base_footprint -> <sensor_frame>` | Required to transform perception point clouds into the robot base frame during correction. |
 
 ## License
 
-All packages in this repository are released under **Apache-2.0** unless stated otherwise in the individual package.
+Apache-2.0
