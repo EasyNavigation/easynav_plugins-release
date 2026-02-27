@@ -1,0 +1,29 @@
+ros-kilted-easynav-mpc-controller (0.3.1-1noble) noble; urgency=high
+
+  * GPLv3 -> Apache 2.0
+  * Remove C++20/C++23 features and update to new MethodBase interface
+  * TFInfo in RTTFBuffer
+  * Refactor to use TFInfo
+  * Trim path for MPC
+  * Stop controllers at IDLE
+  * Obstacles are detected
+  * Methods were added to access to private attributes
+  * Optimizer header file was added
+  * Dependencies were fixed
+  * MPC with differential model is working
+  * MPC Controller minimizes path following
+  * Visualization Marker was added
+  * CI updated
+  * MPC controller is working
+  * Optimizer was changed
+  * Contributors: Francisco Martín Rico, Francisco Miguel Moreno, José Miguel Guerrero, Juan S. Cely G., Miguel
+
+ -- Juan S. Cely G. <juanscelyg@gmail.com>  Thu, 26 Feb 2026 23:00:00 -0000
+
+ros-kilted-easynav-mpc-controller (0.0.2-1noble) noble; urgency=high
+
+
+
+ -- Juan S. Cely G. <juanscelyg@gmail.com>  Sat, 11 Oct 2025 22:00:00 -0000
+
+
