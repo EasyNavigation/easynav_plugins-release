@@ -1,0 +1,12 @@
+Source: ros-kilted-easynav-mpc-controller
+Section: misc
+Priority: optional
+Maintainer: Juan S. Cely G. <juanscelyg@gmail.com>
+Build-Depends: debhelper (>= 9.0.0), libnlopt-cxx-dev, libnlopt-dev, libnlopt0, ros-kilted-ament-cmake, ros-kilted-ament-cmake-gtest <!nocheck>, ros-kilted-ament-lint-auto <!nocheck>, ros-kilted-ament-lint-common <!nocheck>, ros-kilted-easynav-common, ros-kilted-easynav-core, ros-kilted-easynav-simple-common <!nocheck>, ros-kilted-easynav-system, ros-kilted-geometry-msgs, ros-kilted-nav-msgs, ros-kilted-pluginlib, ros-kilted-rclcpp-lifecycle <!nocheck>, ros-kilted-std-srvs <!nocheck>, ros-kilted-tf2-ros, ros-kilted-ros-workspace
+Homepage: 
+Standards-Version: 3.9.2
+
+Package: ros-kilted-easynav-mpc-controller
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, ros-kilted-easynav-common, ros-kilted-easynav-core, ros-kilted-easynav-system, ros-kilted-geometry-msgs, ros-kilted-nav-msgs, ros-kilted-pluginlib, ros-kilted-tf2-ros, ros-kilted-ros-workspace
+Description: Easy Navigation: MPC Controller package.
