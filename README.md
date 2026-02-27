@@ -1,78 +1,76 @@
-# EasyNav Plugins
+# easynav_simple_controller
 
-[![Doxygen Deployment](https://github.com/EasyNavigation/easynav_plugins/actions/workflows/doxygen-doc.yml/badge.svg)](https://github.com/EasyNavigation/easynav_plugins/actions/workflows/doxygen-doc.yml)
-[![rolling](https://github.com/EasyNavigation/easynav_plugins/actions/workflows/rolling.yaml/badge.svg?branch=rolling)](https://github.com/EasyNavigation/easynav_plugins/actions/workflows/rolling.yaml)
-[![kilted](https://github.com/EasyNavigation/easynav_plugins/actions/workflows/kilted.yaml/badge.svg?branch=kilted)](https://github.com/EasyNavigation/easynav_plugins/actions/workflows/kilted.yaml)
-[![jazzy](https://github.com/EasyNavigation/easynav_plugins/actions/workflows/jazzy.yaml/badge.svg?branch=jazzy)](https://github.com/EasyNavigation/easynav_plugins/actions/workflows/jazzy.yaml)
-[![humble](https://github.com/EasyNavigation/easynav_plugins/actions/workflows/humble.yaml/badge.svg?branch=humble)](https://github.com/EasyNavigation/easynav_plugins/actions/workflows/humble.yaml)
-
-📋 Roadmap Project: [RoadMap](https://github.com/EasyNavigation/EasyNavigation/blob/rolling/ROADMAP.md)
+[![ROS 2: kilted](https://img.shields.io/badge/ROS%202-kilted-blue)](#) [![ROS 2: rolling](https://img.shields.io/badge/ROS%202-rolling-blue)](#) [![ROS 2: jazzy](https://img.shields.io/badge/ROS%202-jazzy-blue)](#)
 
 ## Description
+Simple path-following controller that uses PID controllers and a look-ahead reference pose to follow a planned path. It produces velocity commands (`cmd_vel`) based on the reference pose sampled at a look-ahead distance and limits linear/angular speeds and accelerations.
 
-**EasyNav Plugins** provides the official collection of plugins for the [Easy Navigation (EasyNav)](https://github.com/EasyNavigation) framework.  
-These plugins extend the navigation core with planners, controllers, map managers, and localizers compatible with ROS 2.
+## Authors and Maintainers
 
-Each plugin resides in its own ROS 2 package and is registered via `pluginlib`, allowing dynamic loading at runtime.
+- **Authors:** Intelligent Robotics Lab  
+- **Maintainers:** Francisco Martín Rico <fmrico@gmail.com>
 
----
+## Supported ROS 2 Distributions
 
-## Repository Structure
+| Distribution | Status |
+|---|---:|
+| humble | ![kilted](https://img.shields.io/badge/humble-supported-brightgreen) |
+| jazzy | ![kilted](https://img.shields.io/badge/jazzy-supported-brightgreen) |
+| kilted | ![kilted](https://img.shields.io/badge/kilted-supported-brightgreen) |
+| rolling | ![rolling](https://img.shields.io/badge/rolling-supported-brightgreen) | 
+| jazzy | ![jazzy](https://img.shields.io/badge/jazzy-supported-brightgreen) |
 
-### 🧭 Planners
+## Plugin (pluginlib)
+- **Plugin Name:** `easynav_simple_controller/SimpleController`
+- **Type:** `easynav::SimpleController`
+- **Base Class:** `easynav::ControllerMethodBase`
+- **Library:** `easynav_simple_controller`
+- **Description:** Path-following controller using PID (linear and angular) and a look-ahead strategy.
 
-Path planning plugins implementing A*, costmap, or NavMap–based methods.
+## Parameters
 
-| Package | Description | Link |
-|---|---|---|
-| `easynav_costmap_planner` | A* planner over `Costmap2D`. | [README](./planners/easynav_costmap_planner/README.md) |
-| `easynav_simple_planner` | Simple A* planner for `SimpleMap`. | [README](./planners/easynav_simple_planner/README.md) |
-| `easynav_navmap_planner` | A* planner over a NavMap mesh. | [README](./planners/easynav_navmap_planner/README.md) |
+All parameters are declared under the plugin namespace, i.e., `/<node_fqn>/easynav_simple_controller/SimpleController/...`.
 
----
+> This plugin derives from [`easynav::ControllerMethodBase`](https://github.com/EasyNavigation/EasyNavigation/tree/rolling/easynav_core#easynavcontrollermethodbase).  \
+> See that section for shared collision-checking parameters and debug markers common to all controllers.
 
-### ⚙️ Controllers
+| Name | Type | Default | Description |
+|---|---|---:|---|
+| `max_linear_speed` | `double` | `1.0` | Maximum linear speed (m/s). |
+| `max_angular_speed` | `double` | `1.0` | Maximum angular speed (rad/s). |
+| `max_linear_acc` | `double` | `0.3` | Maximum linear acceleration (m/s²). |
+| `max_angular_acc` | `double` | `0.3` | Maximum angular acceleration (rad/s²). |
+| `look_ahead_dist` | `double` | `1.0` | Look-ahead distance to sample the reference pose on the path (m). |
+| `tolerance_dist` | `double` | `0.05` | Distance threshold to switch to pure orientation tracking (m). |
+| `final_goal_angle_tolerance` | `double` | `0.1` | Angular tolerance (rad) used to decide final-goal arrival. |
+| `k_rot` | `double` | `0.5` | Gain used to reduce linear speed based on angular velocity (higher: stronger reduction while turning). |
+| `linear_kp` | `double` | `0.95` | Proportional gain for the linear PID controller. |
+| `linear_ki` | `double` | `0.03` | Integral gain for the linear PID controller. |
+| `linear_kd` | `double` | `0.08` | Derivative gain for the linear PID controller. |
+| `angular_kp` | `double` | `1.5` | Proportional gain for the angular PID controller. |
+| `angular_ki` | `double` | `0.03` | Integral gain for the angular PID controller. |
+| `angular_kd` | `double` | `0.08` | Derivative gain for the angular PID controller. |
 
-Motion controllers for trajectory tracking and reactive behaviors.
+## Interfaces (NavState, Topics and Services)
 
-| Package | Description | Link |
-|---|---|---|
-| `easynav_vff_controller` | Vector Field Force (VFF) reactive controller. | [README](./controllers/easynav_vff_controller/README.md) |
-| `easynav_mppi_controller` | Model Predictive Path Integral (MPPI) controller. | [README](./controllers/easynav_mppi_controller/README.md) |
-| `easynav_simple_controller` | Simple proportional controller for testing. | [README](./controllers/easynav_simple_controller/README.md) |
-| `easynav_serest_controller` | SeReST (Safe Reactive Steering) controller. | [README](./controllers/easynav_serest_controller/README.md) |
-| `easynav_mpc_controller` | Model Predictive Controller (MPC). | [README](./controllers/easynav_mpc_controller/README.md) |
+### NavState
 
----
+This controller uses the shared `NavState` bag provided by the `easynav_core` framework. The following keys are used at runtime by `SimpleController`:
 
-### 🗺️ Maps Managers
+| Key | Type | Access | Notes |
+|---|---|---|---|
+| `robot_pose` | `nav_msgs::msg::Odometry` | **Read** | Current robot odometry used to compute the robot pose and yaw. |
+| `path` | `nav_msgs::msg::Path` | **Read** | Planned path to follow. The controller samples a reference pose at `look_ahead_dist` along this path. |
+| `cmd_vel` | `geometry_msgs::msg::TwistStamped` | **Write** | Output velocity command. Header.frame_id is set to `path.header.frame_id` when available and stamp to the controller node clock. |
 
-Map management plugins that provide, update, and store different environment representations.
+### Topics / Services
 
-| Package | Description | Link |
-|---|---|---|
-| `easynav_navmap_maps_manager` | Manages NavMap mesh layers. | [README](./maps_managers/easynav_navmap_maps_manager/README.md) |
-| `easynav_bonxai_maps_manager` | Manages Bonxai probabilistic voxel maps. | [README](./maps_managers/easynav_bonxai_maps_manager/README.md) |
-| `easynav_octomap_maps_manager` | Manages OctoMap 3D occupancy trees. | [README](./maps_managers/easynav_octomap_maps_manager/README.md) |
-| `easynav_costmap_maps_manager` | Manages Costmap2D layers with filters. | [README](./maps_managers/easynav_costmap_maps_manager/README.md) |
-| `easynav_simple_maps_manager` | Minimal example map manager (SimpleMap). | [README](./maps_managers/easynav_simple_maps_manager/README.md) |
+The controller itself does not create ROS publishers/subscribers or service servers. It interacts via the `NavState` abstraction; how `NavState` is exposed (topics or other IPC mechanisms) depends on the integrating node.
 
----
+## TF Frames
 
-### 📍 Localizers
-
-Localization plugins based on different map types and sensors.
-
-| Package | Description | Link |
-|---|---|---|
-| `easynav_gps_localizer` | GPS-based localizer for outdoor navigation. | [README](./localizers/easynav_gps_localizer/README.md) |
-| `easynav_simple_localizer` | Basic localizer for SimpleMap–based setups. | [README](./localizers/easynav_simple_localizer/README.md) |
-| `easynav_navmap_localizer` | AMCL-like localizer operating on NavMap meshes. | [README](./localizers/easynav_navmap_localizer/README.md) |
-| `easynav_costmap_localizer` | AMCL-like localizer using Costmap2D. | [README](./localizers/easynav_costmap_localizer/README.md) |
-| `easynav_fusion_localizer` | Multi-sensor fusion localizer (e.g., GPS + odometry + map). | [README](./localizers/easynav_fusion_localizer/README.md) |
-
----
+This controller reads pose from `nav_msgs/Odometry` (NavState key `robot_pose`). TF is not directly used in this plugin.
 
 ## License
 
-All packages in this repository are released under **Apache-2.0** unless stated otherwise in the individual package.
+Apache-2.0
