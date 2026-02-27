@@ -1,70 +1,78 @@
-# easynav_simple_maps_manager
+# EasyNav Plugins
+
+[![Doxygen Deployment](https://github.com/EasyNavigation/easynav_plugins/actions/workflows/doxygen-doc.yml/badge.svg)](https://github.com/EasyNavigation/easynav_plugins/actions/workflows/doxygen-doc.yml)
+[![rolling](https://github.com/EasyNavigation/easynav_plugins/actions/workflows/rolling.yaml/badge.svg?branch=rolling)](https://github.com/EasyNavigation/easynav_plugins/actions/workflows/rolling.yaml)
+[![kilted](https://github.com/EasyNavigation/easynav_plugins/actions/workflows/kilted.yaml/badge.svg?branch=kilted)](https://github.com/EasyNavigation/easynav_plugins/actions/workflows/kilted.yaml)
+[![jazzy](https://github.com/EasyNavigation/easynav_plugins/actions/workflows/jazzy.yaml/badge.svg?branch=jazzy)](https://github.com/EasyNavigation/easynav_plugins/actions/workflows/jazzy.yaml)
+[![humble](https://github.com/EasyNavigation/easynav_plugins/actions/workflows/humble.yaml/badge.svg?branch=humble)](https://github.com/EasyNavigation/easynav_plugins/actions/workflows/humble.yaml)
+
+📋 Roadmap Project: [RoadMap](https://github.com/EasyNavigation/EasyNavigation/blob/rolling/ROADMAP.md)
 
 ## Description
 
-Simple Maps Manager that demonstrates the Maps Manager API. It forwards/republishes a basic occupancy map flow and exposes standard topics and a save-map service.
+**EasyNav Plugins** provides the official collection of plugins for the [Easy Navigation (EasyNav)](https://github.com/EasyNavigation) framework.  
+These plugins extend the navigation core with planners, controllers, map managers, and localizers compatible with ROS 2.
 
-At the heart of this stack is the SimpleMap data structure. It represents the environment as a 2D occupancy grid where each cell can be either 0 (free), 1 (occupied), or -1 (unknown).
+Each plugin resides in its own ROS 2 package and is registered via `pluginlib`, allowing dynamic loading at runtime.
 
-## Authors and Maintainers
+---
 
-- **Authors:** Intelligent Robotics Lab
-- **Maintainers:** Francisco Martín Rico <fmrico@gmail.com>
+## Repository Structure
 
-## Supported ROS 2 Distributions
+### 🧭 Planners
 
-| Distribution | Status |
-|---|---|
-| humble | ![kilted](https://img.shields.io/badge/humble-supported-brightgreen) |
-| jazzy | ![kilted](https://img.shields.io/badge/jazzy-supported-brightgreen) |
-| kilted | ![kilted](https://img.shields.io/badge/kilted-supported-brightgreen) |
-| rolling | ![rolling](https://img.shields.io/badge/rolling-supported-brightgreen) |
+Path planning plugins implementing A*, costmap, or NavMap–based methods.
 
-## Plugin (pluginlib)
+| Package | Description | Link |
+|---|---|---|
+| `easynav_costmap_planner` | A* planner over `Costmap2D`. | [README](./planners/easynav_costmap_planner/README.md) |
+| `easynav_simple_planner` | Simple A* planner for `SimpleMap`. | [README](./planners/easynav_simple_planner/README.md) |
+| `easynav_navmap_planner` | A* planner over a NavMap mesh. | [README](./planners/easynav_navmap_planner/README.md) |
 
-- **Plugin Name:** `easynav_simple_maps_manager/SimpleMapsManager`
-- **Type:** `easynav::SimpleMapsManager`
-- **Base Class:** `easynav::MapsManagerBase`
-- **Library:** `easynav_simple_maps_manager`
-- **Description:** Simple (no-op) Maps Manager that demonstrates the Maps Manager API. It forwards/republishes a basic occupancy map flow and exposes standard topics and a save-map service.
+---
 
-## Parameters
+### ⚙️ Controllers
 
-### Plugin Parameters (namespace: `/<node_fqn>/easynav_simple_maps_manager/SimpleMapsManager/...`)
+Motion controllers for trajectory tracking and reactive behaviors.
 
-| Name | Type | Default | Description |
-|---|---|---:|---|
-| `<plugin>.package` | `string` | `""` | Package name used to resolve relative map paths via `ament_index`. |
-| `<plugin>.map_path_file` | `string` | `""` | Relative path (inside the package) to a simple map. |
+| Package | Description | Link |
+|---|---|---|
+| `easynav_vff_controller` | Vector Field Force (VFF) reactive controller. | [README](./controllers/easynav_vff_controller/README.md) |
+| `easynav_mppi_controller` | Model Predictive Path Integral (MPPI) controller. | [README](./controllers/easynav_mppi_controller/README.md) |
+| `easynav_simple_controller` | Simple proportional controller for testing. | [README](./controllers/easynav_simple_controller/README.md) |
+| `easynav_serest_controller` | SeReST (Safe Reactive Steering) controller. | [README](./controllers/easynav_serest_controller/README.md) |
+| `easynav_mpc_controller` | Model Predictive Controller (MPC). | [README](./controllers/easynav_mpc_controller/README.md) |
 
-## Interfaces (Topics and Services)
+---
 
-### Subscriptions and Publications
+### 🗺️ Maps Managers
 
-| Direction | Topic | Type | Purpose | QoS |
-|---|---|---|---|---|
-| Subscription | `<node_fqn>/<plugin>/incoming_map` | `nav_msgs/msg/OccupancyGrid` | Incoming occupancy map (used to feed the dynamic map). | QoS depth=1, transient_local, reliable |
-| Publisher | `<node_fqn>/<plugin>/map` | `nav_msgs/msg/OccupancyGrid` | Published static map. | QoS depth=1 |
-| Publisher | `<node_fqn>/<plugin>/dynamic_map` | `nav_msgs/msg/OccupancyGrid` | Published dynamic (live) map. | QoS depth=100 |
+Map management plugins that provide, update, and store different environment representations.
 
-### Services
+| Package | Description | Link |
+|---|---|---|
+| `easynav_navmap_maps_manager` | Manages NavMap mesh layers. | [README](./maps_managers/easynav_navmap_maps_manager/README.md) |
+| `easynav_bonxai_maps_manager` | Manages Bonxai probabilistic voxel maps. | [README](./maps_managers/easynav_bonxai_maps_manager/README.md) |
+| `easynav_octomap_maps_manager` | Manages OctoMap 3D occupancy trees. | [README](./maps_managers/easynav_octomap_maps_manager/README.md) |
+| `easynav_costmap_maps_manager` | Manages Costmap2D layers with filters. | [README](./maps_managers/easynav_costmap_maps_manager/README.md) |
+| `easynav_simple_maps_manager` | Minimal example map manager (SimpleMap). | [README](./maps_managers/easynav_simple_maps_manager/README.md) |
 
-| Direction | Service | Type | Purpose |
-|---|---|---|---|
-| Service Server | `<node_fqn>/<plugin>/savemap` | `std_srvs/srv/Trigger` | Saves current map(s) to disk. |
+---
 
-## NavState Keys
+### 📍 Localizers
 
-| Key | Type | Access | Notes |
-|---|---|---|---|
-| `points` | `PointPerceptions` | **Read** | Optional perception points bundle (not strictly required for this no-op manager). |
-| `map.static` | `SimpleMap` | **Write** | Static map loaded from file / parameter configuration. |
-| `map.dynamic` | `SimpleMap` | **Write** | Dynamic map after applying incoming updates. |
+Localization plugins based on different map types and sensors.
 
-## TF Frames
+| Package | Description | Link |
+|---|---|---|
+| `easynav_gps_localizer` | GPS-based localizer for outdoor navigation. | [README](./localizers/easynav_gps_localizer/README.md) |
+| `easynav_simple_localizer` | Basic localizer for SimpleMap–based setups. | [README](./localizers/easynav_simple_localizer/README.md) |
+| `easynav_navmap_localizer` | AMCL-like localizer operating on NavMap meshes. | [README](./localizers/easynav_navmap_localizer/README.md) |
+| `easynav_costmap_localizer` | AMCL-like localizer using Costmap2D. | [README](./localizers/easynav_costmap_localizer/README.md) |
+| `easynav_fusion_localizer` | Multi-sensor fusion localizer (e.g., GPS + odometry + map). | [README](./localizers/easynav_fusion_localizer/README.md) |
 
-This manager does not broadcast TF; messages are stamped directly with their frame as provided.
+---
 
 ## License
 
-Apache-2.0
+All packages in this repository are released under **Apache-2.0** unless stated otherwise in the individual package.
