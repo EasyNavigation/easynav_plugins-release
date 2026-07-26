@@ -1,0 +1,18 @@
+ros-kilted-easynav-gps-localizer (0.4.1-1noble) noble; urgency=high
+
+  * Add missing easynav_sensors deps
+  * Update README.md for all localizers
+  * Reset pose from RViz2 for every localizer
+  * GPLv3 -> Apache 2.0
+  * Contributors: Francisco Martín Rico, Juan S. Cely, Miguel, migueldm
+
+ -- "Jose Miguel Guerrero Hernandez" <josemiguel.guerrero@urjc.es>  Sat, 25 Jul 2026 22:00:00 -0000
+
+ros-kilted-easynav-gps-localizer (0.0.2-1noble) noble; urgency=high
+
+  * Reorganization initial
+  * Contributors: Francisco Martín Rico
+
+ -- "Jose Miguel Guerrero Hernandez" <josemiguel.guerrero@urjc.es>  Sat, 11 Oct 2025 22:00:00 -0000
+
+
