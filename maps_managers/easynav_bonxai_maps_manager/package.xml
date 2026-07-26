@@ -2,7 +2,7 @@
 <?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
 <package format="3">
   <name>easynav_bonxai_maps_manager</name>
-  <version>0.4.0</version>
+  <version>0.4.1</version>
   <description>Easy Navigation: Simple MapsManager package.</description>
   <maintainer email="fmrico@gmail.com">Francisco Martín Rico</maintainer>
   <license>Apache-2.0</license>
@@ -25,6 +25,8 @@
   <depend>yaets</depend>
   <depend>yaml_cpp_vendor</depend>
   <depend>graphicsmagick</depend>
+  <depend>eigen3_cmake_module</depend>
+  <depend>eigen</depend>
 
   <test_depend>ament_lint_auto</test_depend>
   <test_depend>ament_lint_common</test_depend>
