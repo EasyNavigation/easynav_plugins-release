@@ -1,0 +1,12 @@
+Source: ros-jazzy-easynav-regulated-pp-controller
+Section: misc
+Priority: optional
+Maintainer: "Francisco Martín Rico" <fmrico@gmail.com>
+Build-Depends: debhelper (>= 9.0.0), ros-jazzy-ament-cmake, ros-jazzy-ament-cmake-gtest <!nocheck>, ros-jazzy-ament-lint-auto <!nocheck>, ros-jazzy-ament-lint-common <!nocheck>, ros-jazzy-easynav-common, ros-jazzy-easynav-core, ros-jazzy-easynav-sensors, ros-jazzy-easynav-system, ros-jazzy-geometry-msgs, ros-jazzy-nav-msgs, ros-jazzy-pluginlib, ros-jazzy-rclcpp-lifecycle <!nocheck>, ros-jazzy-std-msgs, ros-jazzy-tf2, ros-jazzy-tf2-geometry-msgs, ros-jazzy-tf2-ros, ros-jazzy-ros-workspace
+Homepage: https://index.ros.org/p/easynav_regulated_pp_controller/#jazzy
+Standards-Version: 3.9.2
+
+Package: ros-jazzy-easynav-regulated-pp-controller
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, ros-jazzy-easynav-common, ros-jazzy-easynav-core, ros-jazzy-easynav-sensors, ros-jazzy-easynav-system, ros-jazzy-geometry-msgs, ros-jazzy-nav-msgs, ros-jazzy-pluginlib, ros-jazzy-std-msgs, ros-jazzy-tf2, ros-jazzy-tf2-geometry-msgs, ros-jazzy-tf2-ros, ros-jazzy-ros-workspace
+Description: Easy Navigation: port of the Nav2 Regulated Pure Pursuit Controller.
