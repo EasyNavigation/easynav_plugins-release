@@ -13,13 +13,15 @@ find_package(navmap_ros_interfaces REQUIRED)
 find_package(easynav_localizer REQUIRED)
 find_package(easynav_core REQUIRED)
 find_package(easynav_bonxai_maps_manager REQUIRED)
+find_package(easynav_sensors REQUIRED)
 find_package(pluginlib REQUIRED)
 find_package(tf2 REQUIRED)
 find_package(tf2_ros REQUIRED)
 find_package(tf2_geometry_msgs REQUIRED)
 find_package(geometry_msgs REQUIRED)
-find_package(std_srvs REQUIRED)
 find_package(nav_msgs REQUIRED)
+find_package(PCL REQUIRED COMPONENTS common)
+find_package(Eigen3 REQUIRED NO_MODULE)
 
 
 add_library(${PROJECT_NAME} SHARED
@@ -28,6 +30,7 @@ add_library(${PROJECT_NAME} SHARED
 target_include_directories(${PROJECT_NAME} PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
   $<INSTALL_INTERFACE:include/${PROJECT_NAME}>
+  ${PCL_INCLUDE_DIRS}
 )
 target_link_libraries(${PROJECT_NAME} PUBLIC
   easynav_common::easynav_common
@@ -36,12 +39,15 @@ target_link_libraries(${PROJECT_NAME} PUBLIC
   easynav_bonxai_maps_manager::easynav_bonxai_maps_manager
   ${navmap_ros_interfaces_TARGETS}
   easynav_localizer::easynav_localizer
+  easynav_sensors::easynav_sensors
   tf2::tf2
   tf2_ros::tf2_ros
   pluginlib::pluginlib
+  Eigen3::Eigen
   ${tf2_geometry_msgs_TARGETS}
   ${geometry_msgs_TARGETS}
   ${nav_msgs_TARGETS}
+  ${PCL_LIBRARIES}
 )
 
 install(
@@ -64,7 +70,7 @@ if(BUILD_TESTING)
   ament_lint_auto_find_test_dependencies()
 
   find_package(ament_cmake_gtest REQUIRED)
-  # add_subdirectory(tests)
+  add_subdirectory(tests)
 endif()
 
 ament_export_include_directories("include/${PROJECT_NAME}")
@@ -82,11 +88,13 @@ ament_export_dependencies(
   easynav_localizer
   easynav_core
   easynav_bonxai_maps_manager
+  easynav_sensors
   tf2
   tf2_ros
   pluginlib
   geometry_msgs
-  std_srvs
   nav_msgs
+  PCL
+  eigen
 )
 ament_package()
