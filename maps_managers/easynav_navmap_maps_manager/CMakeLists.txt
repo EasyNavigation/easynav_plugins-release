@@ -10,6 +10,10 @@ list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_LIST_DIR}/cmake_modules)
 find_package(ament_cmake REQUIRED)
 find_package(easynav_common REQUIRED)
 find_package(easynav_core REQUIRED)
+find_package(rclcpp REQUIRED)
+find_package(rclcpp_lifecycle REQUIRED)
+find_package(nav_msgs REQUIRED)
+find_package(Eigen3 REQUIRED NO_MODULE)
 find_package(tf2 REQUIRED)
 find_package(tf2_ros REQUIRED)
 find_package(tf2_geometry_msgs REQUIRED)
@@ -18,6 +22,7 @@ find_package(ament_index_cpp REQUIRED)
 find_package(navmap_core REQUIRED)
 find_package(navmap_ros REQUIRED)
 find_package(navmap_ros_interfaces REQUIRED)
+find_package(easynav_sensors REQUIRED)
 find_package(std_srvs REQUIRED)
 find_package(sensor_msgs REQUIRED)
 find_package(yaml_cpp_vendor REQUIRED)
@@ -40,12 +45,16 @@ target_include_directories(${PROJECT_NAME} PUBLIC
 target_link_libraries(${PROJECT_NAME} PUBLIC
   easynav_common::easynav_common
   easynav_core::easynav_core
+  rclcpp::rclcpp
+  rclcpp_lifecycle::rclcpp_lifecycle
+  Eigen3::Eigen
   tf2::tf2
   tf2_ros::tf2_ros
   pluginlib::pluginlib
   ament_index_cpp::ament_index_cpp
   navmap_core::navmap_core
   navmap_ros::navmap_ros
+  easynav_sensors::easynav_sensors
   ${sensor_msgs_TARGETS}
   ${tf2_geometry_msgs_TARGETS}
   ${navmap_ros_interfaces_TARGETS}
@@ -92,6 +101,9 @@ pluginlib_export_plugin_description_file(easynav_navmap_maps_manager easynav_nav
 ament_export_dependencies(
   easynav_common
   easynav_core
+  rclcpp
+  rclcpp_lifecycle
+  eigen
   tf2
   tf2_ros
   pluginlib
@@ -100,6 +112,7 @@ ament_export_dependencies(
   navmap_core
   navmap_ros
   navmap_ros_interfaces
+  easynav_sensors
   std_srvs
   yaets
   yaml_cpp_vendor
