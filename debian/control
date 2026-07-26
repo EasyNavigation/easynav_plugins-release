@@ -1,0 +1,12 @@
+Source: ros-jazzy-easynav-fusion-localizer
+Section: misc
+Priority: optional
+Maintainer: "Miguel Ángel de Miguel" <miguelangel.demgiuel@urjc.es>
+Build-Depends: debhelper (>= 9.0.0), libeigen3-dev, libgeographiclib-dev, ros-jazzy-ament-cmake, ros-jazzy-ament-lint-auto <!nocheck>, ros-jazzy-ament-lint-common <!nocheck>, ros-jazzy-angles, ros-jazzy-diagnostic-msgs, ros-jazzy-diagnostic-updater, ros-jazzy-easynav-common, ros-jazzy-easynav-core, ros-jazzy-easynav-localizer, ros-jazzy-easynav-sensors, ros-jazzy-geographic-msgs, ros-jazzy-geometry-msgs, ros-jazzy-nav-msgs, ros-jazzy-pluginlib, ros-jazzy-rclcpp, ros-jazzy-rclcpp-lifecycle, ros-jazzy-robot-localization, ros-jazzy-robot-localization <!nocheck>, ros-jazzy-sensor-msgs, ros-jazzy-std-srvs, ros-jazzy-tf2, ros-jazzy-tf2-geometry-msgs, ros-jazzy-tf2-ros, ros-jazzy-ros-workspace
+Homepage: https://index.ros.org/p/easynav_fusion_localizer/#jazzy
+Standards-Version: 3.9.2
+
+Package: ros-jazzy-easynav-fusion-localizer
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, libeigen3-dev, libgeographiclib-dev, ros-jazzy-angles, ros-jazzy-diagnostic-msgs, ros-jazzy-diagnostic-updater, ros-jazzy-easynav-common, ros-jazzy-easynav-core, ros-jazzy-easynav-localizer, ros-jazzy-easynav-sensors, ros-jazzy-geographic-msgs, ros-jazzy-geometry-msgs, ros-jazzy-nav-msgs, ros-jazzy-pluginlib, ros-jazzy-rclcpp, ros-jazzy-rclcpp-lifecycle, ros-jazzy-robot-localization, ros-jazzy-sensor-msgs, ros-jazzy-std-srvs, ros-jazzy-tf2, ros-jazzy-tf2-geometry-msgs, ros-jazzy-tf2-ros, ros-jazzy-ros-workspace
+Description: Easy Navigation: Fusion Localizer package.
