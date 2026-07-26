@@ -1,0 +1,31 @@
+ros-kilted-easynav-costmap-maps-manager (0.4.1-1noble) noble; urgency=high
+
+  * Add missing easynav_sensors deps
+  * Update dynamic_map_ with map key at navstate
+  * Avoid rewrite map with dynamic_map
+  * Navstate key among filters are always map, not an arbitrary key
+  * Update calls to deprecated get_package_share_directory
+  * Update calls to deprecated get_package_share_directory
+  * Update dynamic_map_ with map key at navstate
+  * Avoid rewrite map with dynamic_map
+  * Navstate key among filters are always map, not an arbitrary key
+    Dynamic base costmap
+  * Any change in the costmap set it as modified
+  * Publish changes in base map and be ready to save updated map
+  * Costamp base map sincronized with nav_state
+  * Change map static to base
+  * Adaptations to #94 <https://github.com/EasyNavigation/easynav_plugins/issues/94>
+  * Update plugins to new sensors API
+  * GPLv3 -> Apache 2.0
+  * Contributors: Francisco Martín Rico, Francisco Miguel Moreno, Juan S. Cely, Miguel, migueldm
+
+ -- "Francisco Martín Rico" <fmrico@gmail.com>  Sat, 25 Jul 2026 22:00:00 -0000
+
+ros-kilted-easynav-costmap-maps-manager (0.0.2-1noble) noble; urgency=high
+
+  * Reorganization initial
+  * Contributors: Francisco Martín Rico
+
+ -- "Francisco Martín Rico" <fmrico@gmail.com>  Sat, 11 Oct 2025 22:00:00 -0000
+
+
