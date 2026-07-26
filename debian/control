@@ -1,0 +1,12 @@
+Source: ros-kilted-easynav-costmap-common
+Section: misc
+Priority: optional
+Maintainer: "Francisco Martín Rico" <fmrico@gmail.com>
+Build-Depends: debhelper (>= 9.0.0), ros-kilted-ament-cmake, ros-kilted-ament-cmake-gtest <!nocheck>, ros-kilted-ament-index-cpp, ros-kilted-ament-lint-auto <!nocheck>, ros-kilted-ament-lint-common <!nocheck>, ros-kilted-easynav-common, ros-kilted-geometry-msgs, ros-kilted-nav-msgs, ros-kilted-rclcpp, ros-kilted-tf2-geometry-msgs, ros-kilted-ros-workspace
+Homepage: https://index.ros.org/p/easynav_costmap_common/#kilted
+Standards-Version: 3.9.2
+
+Package: ros-kilted-easynav-costmap-common
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, ros-kilted-ament-index-cpp, ros-kilted-easynav-common, ros-kilted-geometry-msgs, ros-kilted-nav-msgs, ros-kilted-rclcpp, ros-kilted-tf2-geometry-msgs, ros-kilted-ros-workspace
+Description: Easy Navigation: Simple Common package.
