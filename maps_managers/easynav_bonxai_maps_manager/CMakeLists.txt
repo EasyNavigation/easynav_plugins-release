@@ -10,21 +10,21 @@ list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_LIST_DIR}/cmake_modules)
 find_package(ament_cmake REQUIRED)
 find_package(easynav_common REQUIRED)
 find_package(easynav_core REQUIRED)
+find_package(rclcpp REQUIRED)
+find_package(Eigen3 REQUIRED NO_MODULE)
 find_package(tf2 REQUIRED)
 find_package(tf2_ros REQUIRED)
 find_package(tf2_geometry_msgs REQUIRED)
 find_package(pluginlib REQUIRED)
 find_package(ament_index_cpp REQUIRED)
-find_package(rclcpp REQUIRED)
-find_package(nav_msgs REQUIRED)
 find_package(PCL REQUIRED COMPONENTS common io filters)
 find_package(pcl_conversions REQUIRED)
 find_package(std_srvs REQUIRED)
 find_package(sensor_msgs REQUIRED)
+find_package(nav_msgs REQUIRED)
 find_package(yaml_cpp_vendor REQUIRED)
 find_package(yaets REQUIRED)
 find_package(GRAPHICSMAGICKCPP REQUIRED)
-find_package(Eigen3 REQUIRED NO_MODULE)
 
 
 add_library(bonxai SHARED
@@ -59,15 +59,14 @@ target_include_directories(${PROJECT_NAME} PUBLIC
 target_link_libraries(${PROJECT_NAME} PUBLIC
   easynav_common::easynav_common
   easynav_core::easynav_core
-  rclcpp::rclcpp
   tf2::tf2
   tf2_ros::tf2_ros
   pluginlib::pluginlib
   ament_index_cpp::ament_index_cpp
+  rclcpp::rclcpp
   Eigen3::Eigen
   ${sensor_msgs_TARGETS}
   ${tf2_geometry_msgs_TARGETS}
-  ${bonxai_msgs_TARGETS}
   yaets::yaets
   ${nav_msgs_TARGETS}
   ${std_srvs_TARGETS}
@@ -112,16 +111,18 @@ ament_export_dependencies(
   easynav_common
   easynav_core
   rclcpp
+  Eigen3
   tf2
   tf2_ros
+  tf2_geometry_msgs
   pluginlib
   nav_msgs
+  sensor_msgs
   ament_index_cpp
   std_srvs
   yaets
   yaml_cpp_vendor
   pcl_conversions
   PCL
-  Eigen3
 )
 ament_package()

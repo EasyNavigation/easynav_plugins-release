@@ -10,6 +10,8 @@ find_package(easynav_common REQUIRED)
 find_package(easynav_simple_common REQUIRED)
 find_package(easynav_core REQUIRED)
 find_package(pluginlib REQUIRED)
+find_package(rclcpp REQUIRED)
+find_package(geometry_msgs REQUIRED)
 find_package(nav_msgs REQUIRED)
 
 
@@ -25,6 +27,8 @@ target_link_libraries(${PROJECT_NAME} PUBLIC
   easynav_core::easynav_core
   easynav_simple_common::easynav_simple_common
   pluginlib::pluginlib
+  rclcpp::rclcpp
+  ${geometry_msgs_TARGETS}
   ${nav_msgs_TARGETS}
 )
 
@@ -63,6 +67,8 @@ ament_export_dependencies(
   easynav_core
   easynav_simple_common
   pluginlib
+  rclcpp
+  geometry_msgs
   nav_msgs
 )
 ament_package()

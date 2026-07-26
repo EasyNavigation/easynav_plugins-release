@@ -2,7 +2,7 @@
 <?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
 <package format="3">
   <name>easynav_regulated_pp_controller</name>
-  <version>0.4.1</version>
+  <version>0.4.2</version>
   <description>Easy Navigation: port of the Nav2 Regulated Pure Pursuit Controller.</description>
   <maintainer email="fmrico@gmail.com">Francisco Martín Rico</maintainer>
   <license>Apache-2.0</license>
@@ -17,6 +17,7 @@
   <depend>easynav_system</depend>
   <depend>easynav_sensors</depend>
   <depend>pluginlib</depend>
+  <depend>rclcpp</depend>
   <depend>tf2</depend>
   <depend>tf2_geometry_msgs</depend>
   <depend>tf2_ros</depend>

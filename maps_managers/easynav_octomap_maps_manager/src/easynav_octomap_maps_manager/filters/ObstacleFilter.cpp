@@ -20,7 +20,7 @@
 #include "easynav_sensors/types/Perceptions.hpp"
 #include "easynav_sensors/types/PointPerception.hpp"
 
-#include "octomap_core/Octomap.hpp"
+#include "octomap/octomap.h"
 
 #include "easynav_octomap_maps_manager/filters/ObstacleFilter.hpp"
 

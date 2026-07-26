@@ -59,7 +59,7 @@ ObstacleFilter::update(NavState & nav_state)
 
   auto view = PointPerceptionsOpsView(perceptions);
   view.downsample(dynamic_map.getResolution())
-  .fuse(tf_info.map_frame)
+  .fuse(tf_info.map_frame, stamp, false)
   .filter({NAN, NAN, 0.1}, {NAN, NAN, NAN});
 
   const auto & fused = view.as_points();

@@ -2,13 +2,15 @@
 Changelog for package easynav_costmap_common
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-0.4.1 (2026-07-26)
+0.4.2 (2026-07-26)
 ------------------
-* Add missing easynav_sensors deps
+* Complete deps
 * Any change in the costmap set it as modified
 * Adding timestamp to costmap
 * GPLv3 -> Apache 2.0
-* Contributors: Francisco Martín Rico, Juan S. Cely, Miguel, migueldm
+* Remove C++20/C++23 features and update to new MethodBase interface
+* Cleanup unused headers
+* Contributors: Francisco Martín Rico, Francisco Miguel Moreno, Juan S. Cely, Miguel, migueldm
 
 0.0.2 (2025-10-12)
 ------------------

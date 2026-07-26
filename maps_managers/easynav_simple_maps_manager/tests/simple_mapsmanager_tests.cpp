@@ -54,13 +54,13 @@ TEST_F(SimpleMapsManagerTest, BasicDynamicUpdate)
   tf_info.map_frame = "world_map";
   tf_info.odom_frame = "world_odom";
   tf_info.robot_frame = "world_base";
-  tf_info.robot_frame = "world_footprint_base";
+  tf_info.robot_footprint_frame = "world_footprint_base";
   easynav::RTTFBuffer::getInstance()->set_tf_info(tf_info);
 
   manager->initialize(node, "test");
 
   auto tf_buffer = easynav::RTTFBuffer::getInstance(node->get_clock());
-  tf2_ros::TransformListener tf_listener(*tf_buffer, node, true);
+  tf2_ros::TransformListener tf_listener(*tf_buffer, *node, true);
 
   easynav::SimpleMap static_map;
   static_map.initialize(30, 30, 0.1, -1.5, -1.5, 0.0);
@@ -118,7 +118,7 @@ TEST_F(SimpleMapsManagerTest, IncomingOccupancyGridUpdatesMaps)
   tf_info.map_frame = "world_map";
   tf_info.odom_frame = "world_odom";
   tf_info.robot_frame = "world_base";
-  tf_info.robot_frame = "world_footprint_base";
+  tf_info.robot_footprint_frame = "world_footprint_base";
   easynav::RTTFBuffer::getInstance()->set_tf_info(tf_info);
 
   manager->initialize(node, "test2");
@@ -168,7 +168,7 @@ TEST_F(SimpleMapsManagerTest, SavemapServiceWorks)
   tf_info.map_frame = "world_map";
   tf_info.odom_frame = "world_odom";
   tf_info.robot_frame = "world_base";
-  tf_info.robot_frame = "world_footprint_base";
+  tf_info.robot_footprint_frame = "world_footprint_base";
   easynav::RTTFBuffer::getInstance()->set_tf_info(tf_info);
 
   manager->initialize(node, "test_savemap");

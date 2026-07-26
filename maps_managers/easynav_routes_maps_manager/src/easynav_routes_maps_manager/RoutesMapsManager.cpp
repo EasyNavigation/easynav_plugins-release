@@ -21,9 +21,7 @@
 
 #include <yaml-cpp/yaml.h>
 
-#include <filesystem>
-
-#include "ament_index_cpp/get_package_share_directory.hpp"
+#include "ament_index_cpp/get_package_share_path.hpp"
 
 #include "rclcpp/rclcpp.hpp"
 
@@ -86,8 +84,8 @@ void RoutesMapsManager::on_initialize()
     // Absolute path: ignore package_name.
     map_path_ = map_path_file;
   } else if (!package_name.empty() && !map_path_file.empty()) {
-    const std::filesystem::path pkgpath(ament_index_cpp::get_package_share_directory(package_name));
-    map_path_ = (pkgpath / map_path_file).string();
+    const auto pkgpath = ament_index_cpp::get_package_share_path(package_name);
+    map_path_ = pkgpath / map_path_file;
   } else {
     throw std::runtime_error(
       "Parameters '" + plugin_name + ".package' and '" + plugin_name +

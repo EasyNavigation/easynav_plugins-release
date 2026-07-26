@@ -2,7 +2,7 @@
 <?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
 <package format="3">
   <name>easynav_costmap_maps_manager</name>
-  <version>0.4.1</version>
+  <version>0.4.2</version>
   <description>Easy Navigation: Simple MapsManager package.</description>
   <maintainer email="fmrico@gmail.com">Francisco Martín Rico</maintainer>
   <license>Apache-2.0</license>
@@ -13,18 +13,17 @@
   <depend>rclcpp_lifecycle</depend>
   <depend>easynav_common</depend>
   <depend>easynav_core</depend>
+  <depend>easynav_sensors</depend>
   <depend>tf2_ros</depend>
-  <depend>tf2</depend>
-  <depend>eigen</depend>
   <depend>pluginlib</depend>
   <depend>nav_msgs</depend>
   <depend>ament_index_cpp</depend>
   <depend>easynav_costmap_common</depend>
-  <depend>easynav_sensors</depend>
   <depend>std_srvs</depend>
   <depend>yaets</depend>
   <depend>yaml_cpp_vendor</depend>
   <depend>graphicsmagick</depend>
+  <depend>eigen</depend>
 
   <test_depend>ament_lint_auto</test_depend>
   <test_depend>ament_lint_common</test_depend>

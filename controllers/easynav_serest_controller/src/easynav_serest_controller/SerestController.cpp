@@ -302,7 +302,7 @@ SerestController::closest_obstacle_distance(
 
   auto view = PointPerceptionsOpsView(perceptions);
   view.downsample(0.3)
-  .fuse(tf_info.robot_frame)
+  .fuse(tf_info.robot_footprint_frame)
   .filter({-dist_search_radius_, -dist_search_radius_, NAN},
     {dist_search_radius_, dist_search_radius_, 2.0})
   .collapse({NAN, NAN, 0.1})

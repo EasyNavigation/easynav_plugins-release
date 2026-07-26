@@ -6,15 +6,15 @@ if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
 endif()
 
 find_package(ament_cmake REQUIRED)
+find_package(rclcpp REQUIRED)
+find_package(rclcpp_lifecycle REQUIRED)
 find_package(easynav_common REQUIRED)
 find_package(easynav_core REQUIRED)
 find_package(easynav_costmap_common REQUIRED)
-find_package(rclcpp REQUIRED)
-find_package(rclcpp_lifecycle REQUIRED)
-find_package(nav_msgs REQUIRED)
 find_package(tf2_ros REQUIRED)
 find_package(pluginlib REQUIRED)
 find_package(ament_index_cpp REQUIRED)
+find_package(nav_msgs REQUIRED)
 find_package(std_srvs REQUIRED)
 find_package(yaets REQUIRED)
 find_package(geometry_msgs REQUIRED)
@@ -35,11 +35,11 @@ target_link_libraries(${PROJECT_NAME} PUBLIC
   easynav_common::easynav_common
   easynav_core::easynav_core
   easynav_costmap_common::easynav_costmap_common
-  rclcpp::rclcpp
-  rclcpp_lifecycle::rclcpp_lifecycle
   tf2_ros::tf2_ros
   pluginlib::pluginlib
   ament_index_cpp::ament_index_cpp
+  rclcpp::rclcpp
+  rclcpp_lifecycle::rclcpp_lifecycle
   yaets::yaets
   yaml-cpp
   interactive_markers::interactive_markers
