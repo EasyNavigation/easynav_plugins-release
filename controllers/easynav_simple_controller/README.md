@@ -1,7 +1,8 @@
 # easynav_simple_controller
 
-## Description
+[![ROS 2: kilted](https://img.shields.io/badge/ROS%202-kilted-blue)](#) [![ROS 2: rolling](https://img.shields.io/badge/ROS%202-rolling-blue)](#) [![ROS 2: jazzy](https://img.shields.io/badge/ROS%202-jazzy-blue)](#)
 
+## Description
 Simple path-following controller that uses PID controllers and a look-ahead reference pose to follow a planned path. It produces velocity commands (`cmd_vel`) based on the reference pose sampled at a look-ahead distance and limits linear/angular speeds and accelerations.
 
 ## Authors and Maintainers
@@ -16,10 +17,10 @@ Simple path-following controller that uses PID controllers and a look-ahead refe
 | humble | ![kilted](https://img.shields.io/badge/humble-supported-brightgreen) |
 | jazzy | ![kilted](https://img.shields.io/badge/jazzy-supported-brightgreen) |
 | kilted | ![kilted](https://img.shields.io/badge/kilted-supported-brightgreen) |
-| rolling | ![rolling](https://img.shields.io/badge/rolling-supported-brightgreen) |
+| rolling | ![rolling](https://img.shields.io/badge/rolling-supported-brightgreen) | 
+| jazzy | ![jazzy](https://img.shields.io/badge/jazzy-supported-brightgreen) |
 
 ## Plugin (pluginlib)
-
 - **Plugin Name:** `easynav_simple_controller/SimpleController`
 - **Type:** `easynav::SimpleController`
 - **Base Class:** `easynav::ControllerMethodBase`
