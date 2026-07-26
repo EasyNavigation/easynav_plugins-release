@@ -1,0 +1,20 @@
+ros-kilted-easynav-routes-maps-manager (0.4.1-1noble) noble; urgency=high
+
+  * Add missing easynav_sensors deps
+  * Navstate key among filters are always map, not an arbitrary key
+  * Update calls to deprecated get_package_share_directory
+  * Navstate key among filters are always map, not an arbitrary key
+  * Added default path for route if not specified
+  * GPLv3 -> Apache 2.0
+  * Contributors: Francisco Martín Rico, Francisco Miguel Moreno, Juan S. Cely, Miguel, migueldm
+
+ -- "Francisco Martín Rico" <fmrico@gmail.com>  Sat, 25 Jul 2026 22:00:00 -0000
+
+ros-kilted-easynav-routes-maps-manager (0.0.2-1noble) noble; urgency=high
+
+  * Reorganization initial
+  * Contributors: Francisco Martín Rico
+
+ -- "Francisco Martín Rico" <fmrico@gmail.com>  Sat, 11 Oct 2025 22:00:00 -0000
+
+
