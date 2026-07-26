@@ -15,6 +15,8 @@ find_package(tf2_ros REQUIRED)
 find_package(tf2_geometry_msgs REQUIRED)
 find_package(pluginlib REQUIRED)
 find_package(ament_index_cpp REQUIRED)
+find_package(rclcpp REQUIRED)
+find_package(nav_msgs REQUIRED)
 find_package(PCL REQUIRED COMPONENTS common io filters)
 find_package(pcl_conversions REQUIRED)
 find_package(std_srvs REQUIRED)
@@ -22,6 +24,7 @@ find_package(sensor_msgs REQUIRED)
 find_package(yaml_cpp_vendor REQUIRED)
 find_package(yaets REQUIRED)
 find_package(GRAPHICSMAGICKCPP REQUIRED)
+find_package(Eigen3 REQUIRED NO_MODULE)
 
 
 add_library(bonxai SHARED
@@ -36,6 +39,7 @@ target_include_directories(bonxai PUBLIC
 target_link_libraries(bonxai PUBLIC
   tf2::tf2
   tf2_ros::tf2_ros
+  Eigen3::Eigen
   ${sensor_msgs_TARGETS}
   ${tf2_geometry_msgs_TARGETS}
   ${PCL_LIBRARIES}
@@ -55,10 +59,12 @@ target_include_directories(${PROJECT_NAME} PUBLIC
 target_link_libraries(${PROJECT_NAME} PUBLIC
   easynav_common::easynav_common
   easynav_core::easynav_core
+  rclcpp::rclcpp
   tf2::tf2
   tf2_ros::tf2_ros
   pluginlib::pluginlib
   ament_index_cpp::ament_index_cpp
+  Eigen3::Eigen
   ${sensor_msgs_TARGETS}
   ${tf2_geometry_msgs_TARGETS}
   ${bonxai_msgs_TARGETS}
@@ -105,6 +111,7 @@ pluginlib_export_plugin_description_file(easynav_core easynav_bonxai_maps_manage
 ament_export_dependencies(
   easynav_common
   easynav_core
+  rclcpp
   tf2
   tf2_ros
   pluginlib
@@ -115,5 +122,6 @@ ament_export_dependencies(
   yaml_cpp_vendor
   pcl_conversions
   PCL
+  Eigen3
 )
 ament_package()
