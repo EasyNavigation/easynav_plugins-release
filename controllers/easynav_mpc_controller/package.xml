@@ -2,7 +2,7 @@
 <?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
 <package format="3">
   <name>easynav_mpc_controller</name>
-  <version>0.2.1</version>
+  <version>0.4.0</version>
   <description>Easy Navigation: MPC Controller package.</description>
   <maintainer email="juanscelyg@gmail.com">Juan S. Cely G.</maintainer>
   <license>Apache-2.0</license>
@@ -15,10 +15,15 @@
   <depend>easynav_common</depend>
   <depend>easynav_core</depend>
   <depend>easynav_system</depend>
+  <depend>easynav_sensors</depend>
   <depend>pluginlib</depend>
   <depend>tf2_ros</depend>
+  <depend>tf2</depend>
   <depend>geometry_msgs</depend>
   <depend>nav_msgs</depend>
+  <depend>sensor_msgs</depend>
+  <depend>pcl_conversions</depend>
+  <depend>eigen</depend>
 
   <test_depend>rclcpp_lifecycle</test_depend>
   <test_depend>easynav_simple_common</test_depend>
