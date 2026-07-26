@@ -1,113 +1,78 @@
-# easynav_costmap_planner
+# EasyNav Plugins
 
-[![ROS 2: humble](https://img.shields.io/badge/ROS%202-humble-blue)](#) [![ROS 2: jazzy](https://img.shields.io/badge/ROS%202-jazzy-blue)](#) [![ROS 2: kilted](https://img.shields.io/badge/ROS%202-kilted-blue)](#) [![ROS 2: rolling](https://img.shields.io/badge/ROS%202-rolling-blue)](#)
+[![Doxygen Deployment](https://github.com/EasyNavigation/easynav_plugins/actions/workflows/doxygen-doc.yml/badge.svg)](https://github.com/EasyNavigation/easynav_plugins/actions/workflows/doxygen-doc.yml)
+[![rolling](https://github.com/EasyNavigation/easynav_plugins/actions/workflows/rolling.yaml/badge.svg?branch=rolling)](https://github.com/EasyNavigation/easynav_plugins/actions/workflows/rolling.yaml)
+[![kilted](https://github.com/EasyNavigation/easynav_plugins/actions/workflows/kilted.yaml/badge.svg?branch=kilted)](https://github.com/EasyNavigation/easynav_plugins/actions/workflows/kilted.yaml)
+[![jazzy](https://github.com/EasyNavigation/easynav_plugins/actions/workflows/jazzy.yaml/badge.svg?branch=jazzy)](https://github.com/EasyNavigation/easynav_plugins/actions/workflows/jazzy.yaml)
+[![humble](https://github.com/EasyNavigation/easynav_plugins/actions/workflows/humble.yaml/badge.svg?branch=humble)](https://github.com/EasyNavigation/easynav_plugins/actions/workflows/humble.yaml)
+
+📋 Roadmap Project: [RoadMap](https://github.com/EasyNavigation/EasyNavigation/blob/rolling/ROADMAP.md)
 
 ## Description
-A planner plugin implementing a standard **A\*** path planner over a `Costmap2D` representation. It reads the dynamic costmap, goal list, and robot pose from NavState and publishes a computed path as a `nav_msgs/Path` message.
 
-## Authors and Maintainers
-- **Authors:** Intelligent Robotics Lab  
-- **Maintainers:** Francisco Martín Rico <fmrico@gmail.com>
+**EasyNav Plugins** provides the official collection of plugins for the [Easy Navigation (EasyNav)](https://github.com/EasyNavigation) framework.  
+These plugins extend the navigation core with planners, controllers, map managers, and localizers compatible with ROS 2.
 
-## Supported ROS 2 Distributions
-| Distribution | Status |
-|---|---|
-| humble | ![kilted](https://img.shields.io/badge/humble-supported-brightgreen) |
-| jazzy | ![kilted](https://img.shields.io/badge/jazzy-supported-brightgreen) |
-| kilted | ![kilted](https://img.shields.io/badge/kilted-supported-brightgreen) |
-| rolling | ![rolling](https://img.shields.io/badge/rolling-supported-brightgreen) |
-
-## Plugin (pluginlib)
-- **Plugin Name:** `easynav_costmap_planner/CostmapPlanner`
-- **Type:** `easynav::CostmapPlanner`
-- **Base Class:** `easynav::PlannerMethodBase`
-- **Library:** `easynav_costmap_planner`
-- **Description:** A default Costmap2D-based A* path planner implementation.
+Each plugin resides in its own ROS 2 package and is registered via `pluginlib`, allowing dynamic loading at runtime.
 
 ---
 
-## Parameters
-All parameters are declared under the plugin namespace, i.e., `/<node_fqn>/easynav_costmap_planner/CostmapPlanner/...`.
+## Repository Structure
 
-| Name | Type | Default | Description |
-|---|---|---:|---|
-| `<plugin>.cost_factor` | `double` | `2.0` | Scaling factor applied to costmap cell values to compute traversal costs. Higher values make high-cost cells much less attractive. |
-| `<plugin>.inflation_penalty` | `double` | `5.0` | Extra penalty added to inflated/near-obstacle cells to push paths away from obstacles. |
-| `<plugin>.heuristic_scale` | `double` | `1.0` | Scaling factor applied to the A* heuristic term. Controls the trade-off between following the cheapest route vs. going more directly. |
-| `<plugin>.continuous_replan` | `bool` | `true` | If `true`, re-plans continuously as the map/goal changes; if `false`, plans once per request. |
+### 🧭 Planners
 
-### Effect of `cost_factor`
+Path planning plugins implementing A*, costmap, or NavMap–based methods.
 
-The planner uses a per-step traversal cost:
-
-$$
-g_{\text{new}} = g_{\text{current}} + \text{step\_cost} \cdot \left(1 + \text{cost\_factor} \cdot \frac{\text{cell\_cost}}{\text{LETHAL\_OBSTACLE}}\right)
-$$
-
-- **Low `cost_factor` (e.g. 1–2):**
-	- Cell cost has a modest influence; the planner is closer to a pure geometric shortest-path search.
-	- Paths may cross moderately expensive regions if that keeps distance short.
-- **High `cost_factor` (e.g. 5–10+):**
-	- High-cost cells become very unattractive, so the planner strongly prefers low-cost corridors (e.g. routes or low-inflation areas), even if they are longer.
-	- Useful when combined with modules that encode preferences as higher costs (such as route managers).
-
-### Effect of `heuristic_scale`
-
-The A* priority is:
-
-$$
-f = g + h, \quad h = \text{heuristic\_scale} \cdot d_{\text{cells}}(\text{current}, \text{goal})
-$$
-
-where $d_{\text{cells}}$ is the Euclidean distance in cell indices (not metric distance, but proportional).
-
-- **Decrease `heuristic_scale` (< 1.0):**
-	- The heuristic term becomes weaker, and A* behaves more like Dijkstra.
-	- The search explores more alternatives and is guided more strictly by the true accumulated cost $g$.
-	- This usually makes the planner follow high-cost penalties (e.g. for leaving a route) more faithfully, at the expense of more computation.
-
-- **Increase `heuristic_scale` (> 1.0):**
-	- The heuristic term dominates more, so the planner prefers geometrically direct paths.
-	- It may still avoid extremely high-cost regions if `cost_factor` is large, but will be more willing to “cut corners” through slightly more expensive zones.
-
-**Typical tuning strategy:**
-
-- First, adjust `cost_factor` so that the costmap properly encodes your preferences:
-	- Increase it until paths clearly avoid high-cost areas that should be disfavored.
-- Then, fine-tune `heuristic_scale`:
-	- Start from `1.0`.
-	- If the planner still takes shortcuts that ignore cost differences, consider reducing it slightly (e.g. `0.7–0.9`).
-	- If planning becomes too slow or explores too widely, you can increase it modestly (e.g. `1.2–1.5`).
-
----
-
-## Interfaces (Topics and Services)
-
-### Publications
-| Direction | Topic | Type | Purpose | QoS |
-|---|---|---|---|---|
-| Publisher | `<node_fqn>/<plugin>/path` | `nav_msgs/msg/Path` | Publishes the computed path from start to goal. | `depth=10` |
-
-This plugin does not create subscriptions or services directly; it reads inputs via NavState.
-
----
-
-## NavState Keys
-| Key | Type | Access | Notes |
-|---|---|---|---|
-| `goals` | `nav_msgs::msg::Goals` | **Read** | Goal list used as planner targets. |
-| `map.dynamic` | `Costmap2D` | **Read** | Dynamic costmap used for A* search. |
-| `robot_pose` | `nav_msgs::msg::Odometry` | **Read** | Current robot pose used as the start position. |
-| `path` | `nav_msgs::msg::Path` | **Write** | Output path to follow. |
-
----
-
-## TF Frames
-| Role | Transform | Notes |
+| Package | Description | Link |
 |---|---|---|
-| Reads | `map -> base_footprint` | Requires consistent frames between the costmap and the published path. |
+| `easynav_costmap_planner` | A* planner over `Costmap2D`. | [README](./planners/easynav_costmap_planner/README.md) |
+| `easynav_simple_planner` | Simple A* planner for `SimpleMap`. | [README](./planners/easynav_simple_planner/README.md) |
+| `easynav_navmap_planner` | A* planner over a NavMap mesh. | [README](./planners/easynav_navmap_planner/README.md) |
+
+---
+
+### ⚙️ Controllers
+
+Motion controllers for trajectory tracking and reactive behaviors.
+
+| Package | Description | Link |
+|---|---|---|
+| `easynav_vff_controller` | Vector Field Force (VFF) reactive controller. | [README](./controllers/easynav_vff_controller/README.md) |
+| `easynav_mppi_controller` | Model Predictive Path Integral (MPPI) controller. | [README](./controllers/easynav_mppi_controller/README.md) |
+| `easynav_simple_controller` | Simple proportional controller for testing. | [README](./controllers/easynav_simple_controller/README.md) |
+| `easynav_serest_controller` | SeReST (Safe Reactive Steering) controller. | [README](./controllers/easynav_serest_controller/README.md) |
+| `easynav_mpc_controller` | Model Predictive Controller (MPC). | [README](./controllers/easynav_mpc_controller/README.md) |
+
+---
+
+### 🗺️ Maps Managers
+
+Map management plugins that provide, update, and store different environment representations.
+
+| Package | Description | Link |
+|---|---|---|
+| `easynav_navmap_maps_manager` | Manages NavMap mesh layers. | [README](./maps_managers/easynav_navmap_maps_manager/README.md) |
+| `easynav_bonxai_maps_manager` | Manages Bonxai probabilistic voxel maps. | [README](./maps_managers/easynav_bonxai_maps_manager/README.md) |
+| `easynav_octomap_maps_manager` | Manages OctoMap 3D occupancy trees. | [README](./maps_managers/easynav_octomap_maps_manager/README.md) |
+| `easynav_costmap_maps_manager` | Manages Costmap2D layers with filters. | [README](./maps_managers/easynav_costmap_maps_manager/README.md) |
+| `easynav_simple_maps_manager` | Minimal example map manager (SimpleMap). | [README](./maps_managers/easynav_simple_maps_manager/README.md) |
+
+---
+
+### 📍 Localizers
+
+Localization plugins based on different map types and sensors.
+
+| Package | Description | Link |
+|---|---|---|
+| `easynav_gps_localizer` | GPS-based localizer for outdoor navigation. | [README](./localizers/easynav_gps_localizer/README.md) |
+| `easynav_simple_localizer` | Basic localizer for SimpleMap–based setups. | [README](./localizers/easynav_simple_localizer/README.md) |
+| `easynav_navmap_localizer` | AMCL-like localizer operating on NavMap meshes. | [README](./localizers/easynav_navmap_localizer/README.md) |
+| `easynav_costmap_localizer` | AMCL-like localizer using Costmap2D. | [README](./localizers/easynav_costmap_localizer/README.md) |
+| `easynav_fusion_localizer` | Multi-sensor fusion localizer (e.g., GPS + odometry + map). | [README](./localizers/easynav_fusion_localizer/README.md) |
 
 ---
 
 ## License
-Apache-2.0
+
+All packages in this repository are released under **Apache-2.0** unless stated otherwise in the individual package.
