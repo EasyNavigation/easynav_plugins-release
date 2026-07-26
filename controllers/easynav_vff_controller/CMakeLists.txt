@@ -10,8 +10,10 @@ find_package(rclcpp REQUIRED)
 find_package(rclcpp_lifecycle REQUIRED)
 find_package(easynav_core REQUIRED)
 find_package(easynav_common REQUIRED)
+find_package(easynav_sensors REQUIRED)
 find_package(nav_msgs REQUIRED)
 find_package(PCL REQUIRED COMPONENTS common io)
+find_package(geometry_msgs REQUIRED)
 find_package(pluginlib REQUIRED)
 find_package(visualization_msgs REQUIRED)
 find_package(tf2 REQUIRED)
@@ -21,8 +23,11 @@ set(dependencies
   rclcpp_lifecycle
   easynav_core
   easynav_common
+  easynav_sensors
   pluginlib
   visualization_msgs
+  geometry_msgs
+  nav_msgs
   tf2
 )
 
@@ -37,8 +42,11 @@ target_include_directories(vff_controller PUBLIC
 target_link_libraries(vff_controller
   easynav_core::easynav_core
   easynav_common::easynav_common
+  easynav_sensors::easynav_sensors
   pluginlib::pluginlib
+  tf2::tf2
   ${nav_msgs_TARGETS}
+  ${geometry_msgs_TARGETS}
   ${visualization_msgs_TARGETS}
   ${PCL_LIBRARIES}
 )
