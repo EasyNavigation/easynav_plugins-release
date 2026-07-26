@@ -1,0 +1,29 @@
+ros-jazzy-easynav-regulated-pp-controller (0.4.0-1noble) noble; urgency=high
+
+  * Add missing easynav_sensors deps
+  * Fix overshoot when DWPP is activated
+  * Fix license and copyright
+  * Port of Regulated Pure Pursuit. Initial commit
+  * Contributors: Francisco Martín Rico
+
+ -- "Francisco Martín Rico" <fmrico@gmail.com>  Sat, 25 Jul 2026 22:00:00 -0000
+
+ros-jazzy-easynav-regulated-pp-controller (0.3.1-1noble) noble; urgency=high
+
+
+
+ -- "Francisco Martín Rico" <fmrico@gmail.com>  Fri, 27 Feb 2026 16:53:00 -0000
+
+ros-jazzy-easynav-regulated-pp-controller (0.2.1-1noble) noble; urgency=high
+
+
+
+ -- "Francisco Martín Rico" <fmrico@gmail.com>  Fri, 27 Feb 2026 13:48:00 -0000
+
+ros-jazzy-easynav-regulated-pp-controller (0.0.2-1noble) noble; urgency=high
+
+
+
+ -- "Francisco Martín Rico" <fmrico@gmail.com>  Sat, 11 Oct 2025 22:00:00 -0000
+
+
