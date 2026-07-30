@@ -1,0 +1,39 @@
+ros-lyrical-easynav-mpc-controller (0.4.2-2trixie) trixie; urgency=high
+
+  * Complete deps
+  * Adaptations to #94 <https://github.com/EasyNavigation/easynav_plugins/issues/94>
+  * Update plugins to new sensors API
+  * GPLv3 -> Apache 2.0
+  * Collision checker scope was changed
+  * Remove C++20/C++23 features and update to new MethodBase interface
+  * Merge branch 'set_robot_frame' into frames-fix-pr-40
+  * TFInfo in RTTFBuffer
+  * Refactor to use TFInfo
+  * Collision avoidance was improved
+  * Final alignements
+  * Trim path for MPC
+  * Stop controllers at IDLE
+  * Obstacles are detected
+  * Methods were added to access to private attributes
+  * Optimizer header file was added
+  * Dependencies were fixed
+  * MPC with differential model is working
+  * MPC Controller minimizes path following
+  * Visualization Marker was added
+  * MPC was tunned
+  * MPC controller is working
+  * Optimizer was changed
+  * Dependecies were added
+  * MPC terminated
+  * MPC was added
+  * Contributors: Francisco Martín Rico, Francisco Miguel Moreno, José Miguel Guerrero, Juan S. Cely, Juan S. Cely G., Miguel, migueldm
+
+ -- "Juan S. Cely G." <juanscelyg@gmail.com>  Sat, 25 Jul 2026 22:00:00 -0000
+
+ros-lyrical-easynav-mpc-controller (0.0.2-2trixie) trixie; urgency=high
+
+
+
+ -- "Juan S. Cely G." <juanscelyg@gmail.com>  Sat, 11 Oct 2025 22:00:00 -0000
+
+
