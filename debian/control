@@ -1,0 +1,12 @@
+Source: ros-lyrical-easynav-costmap-planner
+Section: misc
+Priority: optional
+Maintainer: "Francisco Martín Rico" <fmrico@gmail.com>
+Build-Depends: debhelper (>= 9.0.0), ros-lyrical-ament-cmake, ros-lyrical-ament-cmake-gtest <!nocheck>, ros-lyrical-ament-lint-auto <!nocheck>, ros-lyrical-ament-lint-common <!nocheck>, ros-lyrical-easynav-common, ros-lyrical-easynav-core, ros-lyrical-easynav-costmap-common, ros-lyrical-geometry-msgs, ros-lyrical-nav-msgs, ros-lyrical-pluginlib, ros-lyrical-rclcpp, ros-lyrical-ros-workspace
+Homepage: https://index.ros.org/p/easynav_costmap_planner/#lyrical
+Standards-Version: 3.9.2
+
+Package: ros-lyrical-easynav-costmap-planner
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, ros-lyrical-easynav-common, ros-lyrical-easynav-core, ros-lyrical-easynav-costmap-common, ros-lyrical-geometry-msgs, ros-lyrical-nav-msgs, ros-lyrical-pluginlib, ros-lyrical-rclcpp, ros-lyrical-ros-workspace
+Description: Easy Navigation: Costmap planner package.
