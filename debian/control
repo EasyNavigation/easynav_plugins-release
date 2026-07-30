@@ -1,0 +1,12 @@
+Source: ros-lyrical-easynav-navmap-maps-manager
+Section: misc
+Priority: optional
+Maintainer: "Francisco Martín Rico" <fmrico@gmail.com>
+Build-Depends: debhelper (>= 9.0.0), graphicsmagick-libmagick-dev-compat, libeigen3-dev, libgraphicsmagick++1-dev, ros-lyrical-ament-cmake, ros-lyrical-ament-cmake-gtest <!nocheck>, ros-lyrical-ament-index-cpp, ros-lyrical-ament-lint-auto <!nocheck>, ros-lyrical-ament-lint-common <!nocheck>, ros-lyrical-easynav-common, ros-lyrical-easynav-core, ros-lyrical-easynav-sensors, ros-lyrical-nav-msgs, ros-lyrical-navmap-core, ros-lyrical-navmap-ros, ros-lyrical-navmap-ros-interfaces, ros-lyrical-pluginlib, ros-lyrical-rclcpp, ros-lyrical-rclcpp-lifecycle, ros-lyrical-sensor-msgs, ros-lyrical-std-srvs, ros-lyrical-tf2, ros-lyrical-tf2-geometry-msgs, ros-lyrical-tf2-ros, ros-lyrical-yaets, ros-lyrical-yaml-cpp-vendor, ros-lyrical-ros-workspace
+Homepage: https://index.ros.org/p/easynav_navmap_maps_manager/#lyrical
+Standards-Version: 3.9.2
+
+Package: ros-lyrical-easynav-navmap-maps-manager
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, graphicsmagick-libmagick-dev-compat, libeigen3-dev, libgraphicsmagick++1-dev, ros-lyrical-ament-index-cpp, ros-lyrical-easynav-common, ros-lyrical-easynav-core, ros-lyrical-easynav-sensors, ros-lyrical-nav-msgs, ros-lyrical-navmap-core, ros-lyrical-navmap-ros, ros-lyrical-navmap-ros-interfaces, ros-lyrical-pluginlib, ros-lyrical-rclcpp, ros-lyrical-rclcpp-lifecycle, ros-lyrical-sensor-msgs, ros-lyrical-std-srvs, ros-lyrical-tf2, ros-lyrical-tf2-geometry-msgs, ros-lyrical-tf2-ros, ros-lyrical-yaets, ros-lyrical-yaml-cpp-vendor, ros-lyrical-ros-workspace
+Description: Easy Navigation: Simple MapsManager package.
