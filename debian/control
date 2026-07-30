@@ -1,0 +1,12 @@
+Source: ros-lyrical-easynav-mpc-controller
+Section: misc
+Priority: optional
+Maintainer: "Juan S. Cely G." <juanscelyg@gmail.com>
+Build-Depends: debhelper (>= 9.0.0), libnlopt-cxx-dev, libnlopt-dev, ros-lyrical-ament-cmake, ros-lyrical-ament-cmake-gtest <!nocheck>, ros-lyrical-ament-lint-auto <!nocheck>, ros-lyrical-ament-lint-common <!nocheck>, ros-lyrical-easynav-common, ros-lyrical-easynav-core, ros-lyrical-easynav-sensors, ros-lyrical-easynav-simple-common <!nocheck>, ros-lyrical-easynav-system, ros-lyrical-geometry-msgs, ros-lyrical-nav-msgs, ros-lyrical-pcl-conversions, ros-lyrical-pluginlib, ros-lyrical-rclcpp, ros-lyrical-rclcpp-lifecycle <!nocheck>, ros-lyrical-sensor-msgs, ros-lyrical-std-srvs <!nocheck>, ros-lyrical-tf2, ros-lyrical-tf2-ros, ros-lyrical-ros-workspace
+Homepage: https://index.ros.org/p/easynav_mpc_controller/#lyrical
+Standards-Version: 3.9.2
+
+Package: ros-lyrical-easynav-mpc-controller
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, libnlopt-cxx-dev, libnlopt-dev, libnlopt0, ros-lyrical-easynav-common, ros-lyrical-easynav-core, ros-lyrical-easynav-sensors, ros-lyrical-easynav-system, ros-lyrical-geometry-msgs, ros-lyrical-nav-msgs, ros-lyrical-pcl-conversions, ros-lyrical-pluginlib, ros-lyrical-rclcpp, ros-lyrical-sensor-msgs, ros-lyrical-tf2, ros-lyrical-tf2-ros, ros-lyrical-ros-workspace
+Description: Easy Navigation: MPC Controller package.
