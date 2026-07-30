@@ -1,0 +1,23 @@
+ros-lyrical-easynav-octomap-maps-manager (0.4.2-2trixie) trixie; urgency=high
+
+  * Complete deps
+  * Update calls to deprecated get_package_share_directory
+  * Update plugins to new sensors API
+  * GPLv3 -> Apache 2.0
+  * Remove C++20/C++23 features and update to new MethodBase interface
+  * TFInfo in RTTFBuffer
+  * Sync README with code
+  * Cleanup unused headers
+  * Adaptation to EasyNavigation`#71 <https://github.com/EasyNavigation/easynav_plugins/issues/71>`_
+  * Contributors: Francisco Martín Rico, Francisco Miguel Moreno, Juan S. Cely, Juan S. Cely G., Miguel, migueldm
+
+ -- "Francisco Martín Rico" <fmrico@gmail.com>  Sat, 25 Jul 2026 22:00:00 -0000
+
+ros-lyrical-easynav-octomap-maps-manager (0.0.2-2trixie) trixie; urgency=high
+
+  * Reorganization initial
+  * Contributors: Francisco Martín Rico
+
+ -- "Francisco Martín Rico" <fmrico@gmail.com>  Sat, 11 Oct 2025 22:00:00 -0000
+
+
