@@ -1,0 +1,12 @@
+Source: ros-lyrical-easynav-vff-controller
+Section: misc
+Priority: optional
+Maintainer: "Jose Miguel Guerrero Hernandez" <josemiguel.guerrero@urjc.es>
+Build-Depends: debhelper (>= 9.0.0), ros-lyrical-ament-cmake, ros-lyrical-ament-lint-auto <!nocheck>, ros-lyrical-ament-lint-common <!nocheck>, ros-lyrical-easynav-common, ros-lyrical-easynav-core, ros-lyrical-easynav-sensors, ros-lyrical-nav-msgs, ros-lyrical-pcl-ros, ros-lyrical-pluginlib, ros-lyrical-rclcpp, ros-lyrical-rclcpp-lifecycle, ros-lyrical-tf2, ros-lyrical-visualization-msgs, ros-lyrical-ros-workspace
+Homepage: https://index.ros.org/p/easynav_vff_controller/#lyrical
+Standards-Version: 3.9.2
+
+Package: ros-lyrical-easynav-vff-controller
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, ros-lyrical-easynav-common, ros-lyrical-easynav-core, ros-lyrical-easynav-sensors, ros-lyrical-nav-msgs, ros-lyrical-pcl-ros, ros-lyrical-pluginlib, ros-lyrical-rclcpp, ros-lyrical-rclcpp-lifecycle, ros-lyrical-tf2, ros-lyrical-visualization-msgs, ros-lyrical-ros-workspace
+Description: Easy Navigation: VFF Controller package.
