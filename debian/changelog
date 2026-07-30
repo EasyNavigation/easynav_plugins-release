@@ -1,0 +1,27 @@
+ros-lyrical-easynav-mppi-controller (0.4.2-2trixie) trixie; urgency=high
+
+  * Complete deps
+  * GPLv3 -> Apache 2.0
+  * Remove C++20/C++23 features and update to new MethodBase interface
+  * TFInfo in RTTFBuffer
+  * Refactor to use TFInfo
+  * Include package in cmake and package.xml
+  * Fix link error when running MPPI in Realease
+  * Stop controllers at IDLE
+  * Merge branch 'rolling' into improve_astar_costmap
+  * Referencing base class if ot void
+  * Optimize execution
+  * Cleanup unused headers
+  * Adaptation to EasyNavigation`#71 <https://github.com/EasyNavigation/easynav_plugins/issues/71>`_
+  * Contributors: Francisco Martín Rico, Francisco Miguel Moreno, José Miguel Guerrero, Juan S. Cely, Juan S. Cely G., Miguel, migueldm
+
+ -- "Jose Miguel Guerrero Hernandez" <josemiguel.guerrero@urjc.es>  Sat, 25 Jul 2026 22:00:00 -0000
+
+ros-lyrical-easynav-mppi-controller (0.0.2-2trixie) trixie; urgency=high
+
+  * Reorganization initial
+  * Contributors: Francisco Martín Rico
+
+ -- "Jose Miguel Guerrero Hernandez" <josemiguel.guerrero@urjc.es>  Sat, 11 Oct 2025 22:00:00 -0000
+
+
