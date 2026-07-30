@@ -1,3 +1,48 @@
+## easynav_plugins (lyrical) - 0.4.2-2
+
+The packages in the `easynav_plugins` repository were released into the `lyrical` distro by running `/usr/bin/bloom-release easynav_plugins --ros-distro lyrical --track lyrical` on `Thu, 30 Jul 2026 08:53:46 -0000`
+
+These packages were released:
+- `easynav_bonxai_maps_manager`
+- `easynav_costmap_common`
+- `easynav_costmap_localizer`
+- `easynav_costmap_maps_manager`
+- `easynav_costmap_planner`
+- `easynav_fusion_localizer`
+- `easynav_gps_localizer`
+- `easynav_mpc_controller`
+- `easynav_mppi_controller`
+- `easynav_navmap_localizer`
+- `easynav_navmap_maps_manager`
+- `easynav_navmap_planner`
+- `easynav_octomap_maps_manager`
+- `easynav_regulated_pp_controller`
+- `easynav_routes_maps_manager`
+- `easynav_serest_controller`
+- `easynav_simple_common`
+- `easynav_simple_controller`
+- `easynav_simple_localizer`
+- `easynav_simple_maps_manager`
+- `easynav_simple_planner`
+- `easynav_vff_controller`
+
+Version of package(s) in repository `easynav_plugins`:
+
+- upstream repository: https://github.com/EasyNavigation/easynav_plugins.git
+- release repository: https://github.com/EasyNavigation/easynav_plugins-release.git
+- rosdistro version: `0.4.2-1`
+- old version: `0.4.2-1`
+- new version: `0.4.2-2`
+
+Versions of tools used:
+
+- bloom version: `0.14.3`
+- catkin_pkg version: `1.1.0`
+- rosdep version: `0.26.0`
+- rosdistro version: `1.0.1`
+- vcstools version: `0.1.42`
+
+
 ## easynav_plugins (lyrical) - 0.4.2-1
 
 The packages in the `easynav_plugins` repository were released into the `lyrical` distro by running `/usr/bin/bloom-release easynav_plugins --rosdistro lyrical` on `Sun, 26 Jul 2026 09:23:08 -0000`
