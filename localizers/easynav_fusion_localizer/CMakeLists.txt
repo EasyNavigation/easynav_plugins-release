@@ -1,6 +1,11 @@
 cmake_minimum_required(VERSION 3.20)
 project(easynav_fusion_localizer)
 
+# robot_localization finds Boost; use BoostConfig.cmake instead of the removed FindBoost
+if(POLICY CMP0167)
+  cmake_policy(SET CMP0167 NEW)
+endif()
+
 if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
   add_compile_options(-Wall -Wextra -Wpedantic)
 endif()
@@ -85,7 +90,6 @@ target_link_libraries(fusion_localizer
   ${geometry_msgs_TARGETS}
   ${nav_msgs_TARGETS}
   ${std_srvs_TARGETS}
-  GeographicLib
   ${GeographicLib_LIBRARIES}
   ${robot_localization_LIBRARIES}
   angles::angles
