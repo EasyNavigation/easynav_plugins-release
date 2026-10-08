@@ -2,6 +2,13 @@
 Changelog for package easynav_routes_maps_manager
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.5.0 (2026-10-08)
+------------------
+* Runtime reconfiguration
+* Accepts incoming routes, and saving routes refactored
+* Builds on Humble, Jazzy, Kilted, Lyrical and Rolling
+* Contributors: Francisco Martín Rico
+
 0.4.2 (2026-07-26)
 ------------------
 * Complete deps
