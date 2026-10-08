@@ -13,10 +13,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#include <unistd.h>
+
 #include <gtest/gtest.h>
 
 #include "easynav_simple_common/SimpleMap.hpp"
 #include "easynav_common/RTTFBuffer.hpp"
+#include "easynav_common/TransformListener.hpp"
 #include "easynav_sensors/types/PointPerception.hpp"
 #include "easynav_simple_maps_manager/SimpleMapsManager.hpp"
 
@@ -60,7 +63,7 @@ TEST_F(SimpleMapsManagerTest, BasicDynamicUpdate)
   manager->initialize(node, "test");
 
   auto tf_buffer = easynav::RTTFBuffer::getInstance(node->get_clock());
-  tf2_ros::TransformListener tf_listener(*tf_buffer, *node, true);
+  auto tf_listener = easynav::make_transform_listener(*tf_buffer, node, false);
 
   easynav::SimpleMap static_map;
   static_map.initialize(30, 30, 0.1, -1.5, -1.5, 0.0);
@@ -155,7 +158,8 @@ TEST_F(SimpleMapsManagerTest, IncomingOccupancyGridUpdatesMaps)
   EXPECT_EQ(map.at(1, 1), 0);
 }
 
-class FriendSimpleMapsManager : public easynav::SimpleMapsManager {
+class FriendSimpleMapsManager : public easynav::SimpleMapsManager
+{
 public:
   void force_path(const std::string & path) {map_path_ = path;}
 };
@@ -179,7 +183,8 @@ TEST_F(SimpleMapsManagerTest, SavemapServiceWorks)
   map_static.at(2, 2) = true;
   manager->set_static_map(map_static);
 
-  const std::string test_map_file = "/tmp/savemap_test_map.txt";
+  // Per process: several test runs can share /tmp
+  const std::string test_map_file = "/tmp/savemap_test_map_" + std::to_string(getpid()) + ".txt";
   const std::string service_name = "/test_savemap_node/test_savemap/savemap";
 
   std::static_pointer_cast<FriendSimpleMapsManager>(manager)->force_path(test_map_file);
