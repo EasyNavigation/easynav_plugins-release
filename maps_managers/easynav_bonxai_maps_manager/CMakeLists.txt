@@ -56,6 +56,8 @@ target_include_directories(${PROJECT_NAME} PUBLIC
   $<INSTALL_INTERFACE:include/${PROJECT_NAME}>
   ${PCL_INCLUDE_DIRS}
 )
+# pcl_conversions exports a CMake target only since 2.8 (Kilted); older ones, variables
+target_include_directories(${PROJECT_NAME} SYSTEM PUBLIC ${pcl_conversions_INCLUDE_DIRS})
 target_link_libraries(${PROJECT_NAME} PUBLIC
   easynav_common::easynav_common
   easynav_core::easynav_core
@@ -73,6 +75,8 @@ target_link_libraries(${PROJECT_NAME} PUBLIC
   yaml-cpp
   ${GRAPHICSMAGICKCPP_LIBRARIES}
   ${PCL_LIBRARIES}
+  ${pcl_conversions_TARGETS}
+  ${pcl_conversions_LIBRARIES}
   bonxai
 )
 
@@ -94,7 +98,13 @@ if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)
   set(ament_cmake_copyright_FOUND TRUE)
   set(ament_cmake_cpplint_FOUND TRUE)
+  # Vendored third-party library: excluded from uncrustify instead of
+  # reformatting upstream code (same rationale as copyright/cpplint above).
+  set(ament_cmake_uncrustify_ADDITIONAL_EXCLUDE include/bonxai/*)
   ament_lint_auto_find_test_dependencies()
+
+  find_package(ament_cmake_gtest REQUIRED)
+  add_subdirectory(tests)
 endif()
 
 ament_export_include_directories("include/${PROJECT_NAME}")
