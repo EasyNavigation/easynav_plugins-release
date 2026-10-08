@@ -1,3 +1,50 @@
+## easynav_plugins (jazzy) - 0.5.0-1
+
+The packages in the `easynav_plugins` repository were released into the `jazzy` distro by running `/usr/bin/bloom-release --rosdistro jazzy --track jazzy easynav_plugins` on `Thu, 08 Oct 2026 19:57:40 -0000`
+
+These packages were released:
+- `easynav_bonxai_maps_manager`
+- `easynav_costmap_common`
+- `easynav_costmap_localizer`
+- `easynav_costmap_maps_manager`
+- `easynav_costmap_planner`
+- `easynav_diagnostic_recovery`
+- `easynav_fusion_localizer`
+- `easynav_mhamcl_localizer`
+- `easynav_mpc_controller`
+- `easynav_mppi_controller`
+- `easynav_navmap_localizer`
+- `easynav_navmap_maps_manager`
+- `easynav_navmap_planner`
+- `easynav_octomap_maps_manager`
+- `easynav_regulated_pp_controller`
+- `easynav_routes_maps_manager`
+- `easynav_serest_controller`
+- `easynav_simple_common`
+- `easynav_simple_controller`
+- `easynav_simple_localizer`
+- `easynav_simple_maps_manager`
+- `easynav_simple_planner`
+- `easynav_simple_recovery`
+- `easynav_vff_controller`
+
+Version of package(s) in repository `easynav_plugins`:
+
+- upstream repository: https://github.com/EasyNavigation/easynav_plugins.git
+- release repository: https://github.com/EasyNavigation/easynav_plugins-release.git
+- rosdistro version: `0.4.0-1`
+- old version: `0.4.0-1`
+- new version: `0.5.0-1`
+
+Versions of tools used:
+
+- bloom version: `0.14.4`
+- catkin_pkg version: `1.1.1`
+- rosdep version: `0.27.0`
+- rosdistro version: `1.1.0`
+- vcstools version: `0.1.42`
+
+
 ## easynav_plugins (humble) - 0.5.0-1
 
 The packages in the `easynav_plugins` repository were released into the `humble` distro by running `/usr/bin/bloom-release --rosdistro humble --track humble easynav_plugins --new-track` on `Thu, 08 Oct 2026 19:53:23 -0000`
