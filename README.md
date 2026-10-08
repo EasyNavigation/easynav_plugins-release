@@ -1,89 +1,67 @@
-# EasyNav Plugins
+# easynav_mpc_controller
 
-[![Doxygen Deployment](https://github.com/EasyNavigation/easynav_plugins/actions/workflows/doxygen-doc.yml/badge.svg)](https://github.com/EasyNavigation/easynav_plugins/actions/workflows/doxygen-doc.yml)
-[![rolling](https://github.com/EasyNavigation/easynav_plugins/actions/workflows/rolling.yaml/badge.svg?branch=rolling)](https://github.com/EasyNavigation/easynav_plugins/actions/workflows/rolling.yaml)
-[![lyrical](https://github.com/EasyNavigation/easynav_plugins/actions/workflows/lyrical.yaml/badge.svg?branch=lyrical)](https://github.com/EasyNavigation/easynav_plugins/actions/workflows/lyrical.yaml)
-[![kilted](https://github.com/EasyNavigation/easynav_plugins/actions/workflows/kilted.yaml/badge.svg?branch=kilted)](https://github.com/EasyNavigation/easynav_plugins/actions/workflows/kilted.yaml)
-[![jazzy](https://github.com/EasyNavigation/easynav_plugins/actions/workflows/jazzy.yaml/badge.svg?branch=jazzy)](https://github.com/EasyNavigation/easynav_plugins/actions/workflows/jazzy.yaml)
-[![humble](https://github.com/EasyNavigation/easynav_plugins/actions/workflows/humble.yaml/badge.svg?branch=humble)](https://github.com/EasyNavigation/easynav_plugins/actions/workflows/humble.yaml)
+[![ROS 2: rolling](https://img.shields.io/badge/ROS%202-rolling-blue)](#) 
 
---- 
-
-<img width="240" height="47" alt="MICIU+Cofinanciado+AEI" src="https://github.com/user-attachments/assets/fedfcf13-6af6-43d7-8290-fe22da4e1db0" />
-<img width="240" height="50" alt="eu_funded_en" src="https://github.com/user-attachments/assets/b11da974-9201-4f79-902e-c9c20e8aa7a4" />
-Funded by the European Union through the Horizon Europe programme under Grant Agreement No. 101070254 (CoreSense), and by MICIU/AEI/10.13039/501100011033 and ERDF/EU under grants PERMAP PID2024-161761OB-C21 and PLANNAV PID2024-161761OB-C22 (AURORAS).
-
----
-
-📋 Roadmap Project: [RoadMap](https://github.com/EasyNavigation/EasyNavigation/blob/rolling/ROADMAP.md)
 
 ## Description
+A Model Predictive Controller (MPC) implementation for Easy Navigation.
 
-**EasyNav Plugins** provides the official collection of plugins for the [Easy Navigation (EasyNav)](https://github.com/EasyNavigation) framework.  
-These plugins extend the navigation core with planners, controllers, map managers, and localizers compatible with ROS 2.
+## Authors and Maintainers
+- **Authors:** Intelligent Robotics Lab
+- **Maintainers:** Juan S. Cely G. <juanscelyg@gmail.com>
 
-Each plugin resides in its own ROS 2 package and is registered via `pluginlib`, allowing dynamic loading at runtime.
+## Supported ROS 2 Distributions
+| Distribution | Status |
+|---|---|
+| rolling | ![rolling](https://img.shields.io/badge/rolling-supported-brightgreen) |
 
----
+## Plugin (pluginlib)
+- **Plugin Name:** `easynav_mpc_controller/MPCController`
+- **Type:** `easynav::MPCController`
+- **Base Class:** `easynav::ControllerMethodBase`
+- **Library:** `easynav_mpc_controller`
+- **Description:** A Model Predictive Controller (MPC) implementation for Easy Navigation.
 
-## Repository Structure
+## Parameters
+All parameters are declared under the plugin namespace, i.e., `/<node_fqn>/easynav_mpc_controller/MPCController/...`.
 
-### 🧭 Planners
+| Name | Type | Default | Description |
+|---|---|---:|---|
+| `<plugin>.horizon_steps` | `int` | `5` | Number of time steps in the prediction horizon. |
+| `<plugin>.dt` | `double` | `0.1` | Integration time step (seconds). |
+| `<plugin>.safety_radius` | `double` | `0.35` | Safety radius to check possible collisions. |
+| — | — | — | Velocity and acceleration limits are not this plugin's: they are the robot limits of `controller_node` (`robot_limits.max_linear_vel`, `min_linear_vel`, `max_angular_vel`, `max_linear_acc`, `max_linear_decel`, `max_angular_acc`, `max_angular_decel`), queried with `ControllerMethodBase::get_robot_limits()` and also enforced by ControllerNode's velocity smoother. |
+| `<plugin>.verbose` | `bool` | `false` | Show data on terminal about Optimization. |
+| `<plugin>.use_collision_checker` | `bool` | `false` | Enables the in-loop obstacle constraint (within `safety_radius`). |
+| `<plugin>.min_height` | `double` | `0.1` | Perceived points lower than this (m, map frame) are the floor, not obstacles to avoid. Lower it for sensors mounted lower (e.g. a laser 0.095 m high). |
 
-Path planning plugins implementing A*, costmap, or NavMap–based methods.
+> **Deprecated:** this plugin's former limit parameters (`max_linear_velocity`, `max_angular_velocity`, under the plugin's name) still apply, with a warning, where `controller_node.robot_limits.*` does not set that limit. They will stop working soon: move them to `robot_limits`.
 
-| Package | Description | Link |
-|---|---|---|
-| `easynav_costmap_planner` | A* planner over `Costmap2D`. | [README](./planners/easynav_costmap_planner/README.md) |
-| `easynav_simple_planner` | Simple A* planner for `SimpleMap`. | [README](./planners/easynav_simple_planner/README.md) |
-| `easynav_navmap_planner` | A* planner over a NavMap mesh. | [README](./planners/easynav_navmap_planner/README.md) |
 
----
+## Interfaces (Topics and Services)
 
-### ⚙️ Controllers
+### Subscriptions and Publications
+| Direction | Topic | Type | Purpose | QoS |
+|---|---|---|---|---|
+| Publisher | `/mpc/path` | `nav_msgs/msg/path` | MPC trajectories generate by Predictive Component. | QoS depth=10 |
+| Publisher | `/mpc/detection` | `sensor_msgs::msg::PointCloud2` | Detections used by collision checker. | QoS depth=10 |
 
-Motion controllers for trajectory tracking and reactive behaviors.
 
-| Package | Description | Link |
-|---|---|---|
-| `easynav_vff_controller` | Vector Field Force (VFF) reactive controller. | [README](./controllers/easynav_vff_controller/README.md) |
-| `easynav_mppi_controller` | Model Predictive Path Integral (MPPI) controller. | [README](./controllers/easynav_mppi_controller/README.md) |
-| `easynav_simple_controller` | Simple proportional controller for testing. | [README](./controllers/easynav_simple_controller/README.md) |
-| `easynav_serest_controller` | SeReST (Safe Reactive Steering) controller. | [README](./controllers/easynav_serest_controller/README.md) |
-| `easynav_mpc_controller` | Model Predictive Controller (MPC). | [README](./controllers/easynav_mpc_controller/README.md) |
-| `easynav_regulated_pp_controller` | Regulated Pure Pursuit controller, with optional Dynamic Window (DWPP) extension. | [README](./controllers/easynav_regulated_pp_controller/README.md) |
+### Services
+This package does not create service servers or clients.
 
----
 
-### 🗺️ Maps Managers
+## NavState Keys
+| Key | Type | Access | Notes |
+|---|---|---|---|
+| `path` | `nav_msgs::msg::Path` | **Read** | Target path to track. |
+| `robot_pose` | `nav_msgs::msg::Odometry` | **Read** | Current robot pose/state. |
+| `cmd_vel` | `geometry_msgs::msg::TwistStamped` | **Read** | Last commanded velocity (if provided in state). |
+| `points` | `PointPerceptions` | **Read** | Perception point cloud(s) used for costs. |
 
-Map management plugins that provide, update, and store different environment representations.
 
-| Package | Description | Link |
-|---|---|---|
-| `easynav_navmap_maps_manager` | Manages NavMap mesh layers. | [README](./maps_managers/easynav_navmap_maps_manager/README.md) |
-| `easynav_bonxai_maps_manager` | Manages Bonxai probabilistic voxel maps. | [README](./maps_managers/easynav_bonxai_maps_manager/README.md) |
-| `easynav_octomap_maps_manager` | Manages OctoMap 3D occupancy trees. | [README](./maps_managers/easynav_octomap_maps_manager/README.md) |
-| `easynav_costmap_maps_manager` | Manages Costmap2D layers with filters. | [README](./maps_managers/easynav_costmap_maps_manager/README.md) |
-| `easynav_simple_maps_manager` | Minimal example map manager (SimpleMap). | [README](./maps_managers/easynav_simple_maps_manager/README.md) |
-
----
-
-### 📍 Localizers
-
-Localization plugins based on different map types and sensors.
-
-| Package | Description | Link |
-|---|---|---|
-| `easynav_gps_localizer` | GPS-based localizer for outdoor navigation. | [README](./localizers/easynav_gps_localizer/README.md) |
-| `easynav_simple_localizer` | Basic localizer for SimpleMap–based setups. | [README](./localizers/easynav_simple_localizer/README.md) |
-| `easynav_navmap_localizer` | AMCL-like localizer operating on NavMap meshes. | [README](./localizers/easynav_navmap_localizer/README.md) |
-| `easynav_costmap_localizer` | AMCL-like localizer using Costmap2D. | [README](./localizers/easynav_costmap_localizer/README.md) |
-| `easynav_mhamcl_localizer` | Multi-Hypothesis AMCL localizer using Costmap2D: global localization and kidnapping recovery. | [README](./localizers/easynav_mhamcl_localizer/README.md) |
-| `easynav_fusion_localizer` | Multi-sensor fusion localizer (e.g., GPS + odometry + map). | [README](./localizers/easynav_fusion_localizer/README.md) |
-
----
+## TF Frames
+This controller does not explicitly publish or require TF frames in code.
 
 ## License
-
-All packages in this repository are released under **Apache-2.0** unless stated otherwise in the individual package.
+Apache-2.0
