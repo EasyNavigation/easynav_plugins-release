@@ -1,89 +1,82 @@
-# EasyNav Plugins
+# easynav_navmap_planner
 
-[![Doxygen Deployment](https://github.com/EasyNavigation/easynav_plugins/actions/workflows/doxygen-doc.yml/badge.svg)](https://github.com/EasyNavigation/easynav_plugins/actions/workflows/doxygen-doc.yml)
-[![rolling](https://github.com/EasyNavigation/easynav_plugins/actions/workflows/rolling.yaml/badge.svg?branch=rolling)](https://github.com/EasyNavigation/easynav_plugins/actions/workflows/rolling.yaml)
-[![lyrical](https://github.com/EasyNavigation/easynav_plugins/actions/workflows/lyrical.yaml/badge.svg?branch=lyrical)](https://github.com/EasyNavigation/easynav_plugins/actions/workflows/lyrical.yaml)
-[![kilted](https://github.com/EasyNavigation/easynav_plugins/actions/workflows/kilted.yaml/badge.svg?branch=kilted)](https://github.com/EasyNavigation/easynav_plugins/actions/workflows/kilted.yaml)
-[![jazzy](https://github.com/EasyNavigation/easynav_plugins/actions/workflows/jazzy.yaml/badge.svg?branch=jazzy)](https://github.com/EasyNavigation/easynav_plugins/actions/workflows/jazzy.yaml)
-[![humble](https://github.com/EasyNavigation/easynav_plugins/actions/workflows/humble.yaml/badge.svg?branch=humble)](https://github.com/EasyNavigation/easynav_plugins/actions/workflows/humble.yaml)
-
---- 
-
-<img width="240" height="47" alt="MICIU+Cofinanciado+AEI" src="https://github.com/user-attachments/assets/fedfcf13-6af6-43d7-8290-fe22da4e1db0" />
-<img width="240" height="50" alt="eu_funded_en" src="https://github.com/user-attachments/assets/b11da974-9201-4f79-902e-c9c20e8aa7a4" />
-Funded by the European Union through the Horizon Europe programme under Grant Agreement No. 101070254 (CoreSense), and by MICIU/AEI/10.13039/501100011033 and ERDF/EU under grants PERMAP PID2024-161761OB-C21 and PLANNAV PID2024-161761OB-C22 (AURORAS).
-
----
-
-📋 Roadmap Project: [RoadMap](https://github.com/EasyNavigation/EasyNavigation/blob/rolling/ROADMAP.md)
+[![ROS 2: humble](https://img.shields.io/badge/ROS%202-humble-blue)](#) [![ROS 2: jazzy](https://img.shields.io/badge/ROS%202-jazzy-blue)](#) [![ROS 2: kilted](https://img.shields.io/badge/ROS%202-kilted-blue)](#) [![ROS 2: rolling](https://img.shields.io/badge/ROS%202-rolling-blue)](#)
 
 ## Description
+**A\*** path planner operating over a `NavMap` triangular mesh.  
+The planner computes the **minimum-cost path** between the robot and the goal, taking into account both the geometric distance between triangles and the cost values stored in a selected NavMap layer (typically `"inflated_obstacles"`).
 
-**EasyNav Plugins** provides the official collection of plugins for the [Easy Navigation (EasyNav)](https://github.com/EasyNavigation) framework.  
-These plugins extend the navigation core with planners, controllers, map managers, and localizers compatible with ROS 2.
+Instead of simply avoiding non-free NavCels, the planner integrates their cost values (0–255) into the path evaluation. Cells marked as `LETHAL_OBSTACLE`, `NO_INFORMATION` or inscribed (`INSCRIBED_INFLATED_OBSTACLE`) are non-traversable (inscribed ones only near the start, so a robot inside that band can leave it), while inflated cells are allowed but penalized proportionally to their cost.  
 
-Each plugin resides in its own ROS 2 package and is registered via `pluginlib`, allowing dynamic loading at runtime.
+The search moves between NavCels that share a vertex, not only an edge, so no direction is favored by how the mesh is split; a move through a shared vertex is only taken when every NavCel around that vertex is traversable, so the path never slips between two obstacles that touch at a corner. Then the path is shortened by line of sight: from each waypoint it goes straight to the farthest one whose segment crosses only traversable NavCels no costlier than the waypoints it replaces, and the result is resampled at the NavCel spacing on the surface. The path ends exactly at the goal.  
 
----
+This enables smoother and safer trajectories that still respect proximity constraints imposed by obstacle inflation.
 
-## Repository Structure
 
-### 🧭 Planners
+### Cost model
+For two neighboring NavCels `u` and `v`, the edge cost is computed as:
 
-Path planning plugins implementing A*, costmap, or NavMap–based methods.
+\[
+\text{cost}(u,v) = d(u,v) \times \left(\text{cost\_factor} + \text{inflation\_penalty} \times \frac{c(v)}{253}\right)
+\]
 
-| Package | Description | Link |
-|---|---|---|
-| `easynav_costmap_planner` | A* planner over `Costmap2D`. | [README](./planners/easynav_costmap_planner/README.md) |
-| `easynav_simple_planner` | Simple A* planner for `SimpleMap`. | [README](./planners/easynav_simple_planner/README.md) |
-| `easynav_navmap_planner` | A* planner over a NavMap mesh. | [README](./planners/easynav_navmap_planner/README.md) |
+where `d(u,v)` is the Euclidean distance between triangle centroids,  
+and `c(v)` is the cost value of cell `v`.  
+This formulation ensures that:
+- cells near obstacles (high cost) are traversed only if geometrically necessary,
+- lethal (`254`) and unknown (`255`) cells are not traversable.
 
----
 
-### ⚙️ Controllers
+## Authors and Maintainers
+- **Authors:** Intelligent Robotics Lab
+- **Maintainers:** Francisco Martín Rico <fmrico@gmail.com>
 
-Motion controllers for trajectory tracking and reactive behaviors.
+## Supported ROS 2 Distributions
+| Distribution | Status |
+|---|---|
+| humble | ![kilted](https://img.shields.io/badge/humble-supported-brightgreen) |
+| jazzy | ![kilted](https://img.shields.io/badge/jazzy-supported-brightgreen) |
+| kilted | ![kilted](https://img.shields.io/badge/kilted-supported-brightgreen) |
+| rolling | ![rolling](https://img.shields.io/badge/rolling-supported-brightgreen) |
 
-| Package | Description | Link |
-|---|---|---|
-| `easynav_vff_controller` | Vector Field Force (VFF) reactive controller. | [README](./controllers/easynav_vff_controller/README.md) |
-| `easynav_mppi_controller` | Model Predictive Path Integral (MPPI) controller. | [README](./controllers/easynav_mppi_controller/README.md) |
-| `easynav_simple_controller` | Simple proportional controller for testing. | [README](./controllers/easynav_simple_controller/README.md) |
-| `easynav_serest_controller` | SeReST (Safe Reactive Steering) controller. | [README](./controllers/easynav_serest_controller/README.md) |
-| `easynav_mpc_controller` | Model Predictive Controller (MPC). | [README](./controllers/easynav_mpc_controller/README.md) |
-| `easynav_regulated_pp_controller` | Regulated Pure Pursuit controller, with optional Dynamic Window (DWPP) extension. | [README](./controllers/easynav_regulated_pp_controller/README.md) |
+## Plugin (pluginlib)
+- **Plugin Name:** `easynav_navmap_planner/AStarPlanner`
+- **Type:** `easynav::navmap::AStarPlanner`
+- **Base Class:** `easynav::PlannerMethodBase`
+- **Library:** `easynav_navmap_planner`
+- **Description:** A\* path planner over a NavMap triangular mesh using per-cell costs to compute the shortest safe path.
 
----
+## Parameters
+All parameters are declared under the plugin namespace, i.e.  
+`/<node_fqn>/easynav_navmap_planner/AStarPlanner/...`
 
-### 🗺️ Maps Managers
+| Name | Type | Default | Description |
+|---|---|---:|---|
+| `<plugin>.cost_factor` | `double` | `2.0` | Multiplicative weight for geometric distance; values > 1 increase the relative importance of distance. |
+| `<plugin>.cost_weight` | `double` | `5.0` | Weight of the cell cost (inflation) against the path length; higher values keep paths farther from obstacles. |
+| `<plugin>.continuous_replan` | `bool` | `true` | If true, recomputes the path whenever `NavState` updates; if false, plans once per goal. |
 
-Map management plugins that provide, update, and store different environment representations.
+**Note:** The planner internally uses hardcoded values for `layer_name` (prefers `"inflated_obstacles"`, fallback to `"obstacles"`), `cost_axial`, and `cost_diagonal`. These are not runtime-configurable parameters.
 
-| Package | Description | Link |
-|---|---|---|
-| `easynav_navmap_maps_manager` | Manages NavMap mesh layers. | [README](./maps_managers/easynav_navmap_maps_manager/README.md) |
-| `easynav_bonxai_maps_manager` | Manages Bonxai probabilistic voxel maps. | [README](./maps_managers/easynav_bonxai_maps_manager/README.md) |
-| `easynav_octomap_maps_manager` | Manages OctoMap 3D occupancy trees. | [README](./maps_managers/easynav_octomap_maps_manager/README.md) |
-| `easynav_costmap_maps_manager` | Manages Costmap2D layers with filters. | [README](./maps_managers/easynav_costmap_maps_manager/README.md) |
-| `easynav_simple_maps_manager` | Minimal example map manager (SimpleMap). | [README](./maps_managers/easynav_simple_maps_manager/README.md) |
+## Interfaces (Topics and Services)
 
----
+### Publications
+| Direction | Topic | Type | Purpose | QoS |
+|---|---|---|---|---|
+| Publisher | `<node_fqn>/<plugin>/path` | `nav_msgs/msg/Path` | Publishes the computed A* path. | depth=10 |
 
-### 📍 Localizers
+This plugin does not create subscriptions or services directly; it retrieves all inputs from `NavState`.
 
-Localization plugins based on different map types and sensors.
+## NavState Keys
+| Key | Type | Access | Description |
+|---|---|---|---|
+| `goals` | `nav_msgs::msg::Goals` | **Read** | Target pose(s) for path planning. |
+| `robot_pose` | `nav_msgs::msg::Odometry` | **Read** | Current robot pose (start position). |
+| `map.navmap` | `::navmap::NavMap` | **Read** | NavMap containing geometry and cost layer. The planner reads costs from the layer specified in `<plugin>.layer` (default: `"inflated_obstacles"`). If that layer does not exist, it automatically falls back to `"obstacles"`. |
+| `path` | `nav_msgs::msg::Path` | **Write** | Output path, computed as the lowest-cost route. |
 
-| Package | Description | Link |
-|---|---|---|
-| `easynav_gps_localizer` | GPS-based localizer for outdoor navigation. | [README](./localizers/easynav_gps_localizer/README.md) |
-| `easynav_simple_localizer` | Basic localizer for SimpleMap–based setups. | [README](./localizers/easynav_simple_localizer/README.md) |
-| `easynav_navmap_localizer` | AMCL-like localizer operating on NavMap meshes. | [README](./localizers/easynav_navmap_localizer/README.md) |
-| `easynav_costmap_localizer` | AMCL-like localizer using Costmap2D. | [README](./localizers/easynav_costmap_localizer/README.md) |
-| `easynav_mhamcl_localizer` | Multi-Hypothesis AMCL localizer using Costmap2D: global localization and kidnapping recovery. | [README](./localizers/easynav_mhamcl_localizer/README.md) |
-| `easynav_fusion_localizer` | Multi-sensor fusion localizer (e.g., GPS + odometry + map). | [README](./localizers/easynav_fusion_localizer/README.md) |
-
----
+## TF Frames
+The planner assumes frame consistency between NavMap, robot pose, and goals. No TF lookups are performed internally.
 
 ## License
-
-All packages in this repository are released under **Apache-2.0** unless stated otherwise in the individual package.
+Apache-2.0
