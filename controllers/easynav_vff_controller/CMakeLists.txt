@@ -65,6 +65,9 @@ if(BUILD_TESTING)
   set(ament_cmake_copyright_FOUND TRUE)
   set(ament_cmake_cpplint_FOUND TRUE)
   ament_lint_auto_find_test_dependencies()
+
+  find_package(ament_cmake_gtest REQUIRED)
+  add_subdirectory(tests)
 endif()
 
 ament_export_include_directories(include)
@@ -76,5 +79,5 @@ ament_export_targets(
 )
 # Register the control plugins
 pluginlib_export_plugin_description_file(easynav_core easynav_vff_controller_plugins.xml)
-ament_export_dependencies(${dependencies})
+ament_export_dependencies(${dependencies} PCL)
 ament_package()
