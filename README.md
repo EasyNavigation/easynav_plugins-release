@@ -1,89 +1,129 @@
-# EasyNav Plugins
+# easynav_diagnostic_recovery
 
-[![Doxygen Deployment](https://github.com/EasyNavigation/easynav_plugins/actions/workflows/doxygen-doc.yml/badge.svg)](https://github.com/EasyNavigation/easynav_plugins/actions/workflows/doxygen-doc.yml)
-[![rolling](https://github.com/EasyNavigation/easynav_plugins/actions/workflows/rolling.yaml/badge.svg?branch=rolling)](https://github.com/EasyNavigation/easynav_plugins/actions/workflows/rolling.yaml)
-[![lyrical](https://github.com/EasyNavigation/easynav_plugins/actions/workflows/lyrical.yaml/badge.svg?branch=lyrical)](https://github.com/EasyNavigation/easynav_plugins/actions/workflows/lyrical.yaml)
-[![kilted](https://github.com/EasyNavigation/easynav_plugins/actions/workflows/kilted.yaml/badge.svg?branch=kilted)](https://github.com/EasyNavigation/easynav_plugins/actions/workflows/kilted.yaml)
-[![jazzy](https://github.com/EasyNavigation/easynav_plugins/actions/workflows/jazzy.yaml/badge.svg?branch=jazzy)](https://github.com/EasyNavigation/easynav_plugins/actions/workflows/jazzy.yaml)
-[![humble](https://github.com/EasyNavigation/easynav_plugins/actions/workflows/humble.yaml/badge.svg?branch=humble)](https://github.com/EasyNavigation/easynav_plugins/actions/workflows/humble.yaml)
+A diagnosis-driven recovery system for EasyNav: `easynav_diagnostic_recovery/DiagnosticRecoveryManager`.
+For the full design, see `docs/recoveries_easynav.md` in EasyNavigation.
 
---- 
+A recovery system is a `RecoveryManagerBase` plugin hosted by `recovery_node`. This one is made of
+plugins too, at two levels:
 
-<img width="240" height="47" alt="MICIU+Cofinanciado+AEI" src="https://github.com/user-attachments/assets/fedfcf13-6af6-43d7-8290-fe22da4e1db0" />
-<img width="240" height="50" alt="eu_funded_en" src="https://github.com/user-attachments/assets/b11da974-9201-4f79-902e-c9c20e8aa7a4" />
-Funded by the European Union through the Horizon Europe programme under Grant Agreement No. 101070254 (CoreSense), and by MICIU/AEI/10.13039/501100011033 and ERDF/EU under grants PERMAP PID2024-161761OB-C21 and PLANNAV PID2024-161761OB-C22 (AURORAS).
+- **Level 0, RT: safety reflexes** (`SafetyReflexBase`). Every RT cycle, right before publishing, each
+  reflex checks the command about to be sent, whoever produced it (the controller or a mitigation).
+  On imminent danger it overrides that command (highest priority, not smoothed).
+- **Level 1, non-RT: evaluators and mitigations.**
+  - Evaluators (`RecoveryEvaluatorBase`) diagnose. Each one writes a
+    `diagnostic_msgs/DiagnosticStatus` (OK/WARN/ERROR) to NavState.
+  - Mitigations (`RecoveryMitigationBase`) handle diagnostics in `ERROR`. On each cycle, the manager:
+    - takes the first diagnostic in `ERROR` and starts the first mitigation, by `priority` (lower
+      first), whose `can_handle()` accepts it;
+    - runs at most one mitigation at a time, until it returns `SUCCEEDED` or `FAILED`;
+    - when one fails, excludes it for that diagnostic, so the next one is tried (escalation).
+  - A mitigation that `requires_control()` drives the robot: it takes over the controller.
+  - Mitigations ask EasyNav through the manager to abort the mission or shut down.
+  - While a mitigation is active or a diagnostic is in `ERROR`, the mission's progress is held: no goal
+    is taken as reached.
 
----
+Topics: `diagnostics` (`diagnostic_msgs/DiagnosticArray`) and `mitigation` (`rcl_interfaces/Log`,
+what the active mitigation reports). The EasyNav TUI shows both.
 
-📋 Roadmap Project: [RoadMap](https://github.com/EasyNavigation/EasyNavigation/blob/rolling/ROADMAP.md)
+## Package layout
 
-## Description
+Everything is in the `easynav_diagnostic_recovery` package and library. Headers are under
+`include/easynav_diagnostic_recovery/`, sources under `src/easynav_diagnostic_recovery/` and tests
+under `tests/`, with the same subfolders:
 
-**EasyNav Plugins** provides the official collection of plugins for the [Easy Navigation (EasyNav)](https://github.com/EasyNavigation) framework.  
-These plugins extend the navigation core with planners, controllers, map managers, and localizers compatible with ROS 2.
+| Subfolder | Contents |
+|---|---|
+| (top level) | The manager, the three plugin interfaces, `ObstacleProximity`, and dummy plugins (`easynav_diagnostic_recovery` namespace) |
+| `reflexes/` | `CollisionSafetyReflex` |
+| `evaluators/` | `NoPathEvaluator`, `ObstacleTooCloseEvaluator`, `ControllerStuckEvaluator`, `RosGraphEvaluator`, `SafetyChannelEvaluator` |
+| `mitigations/` | `SafeRetreatRecovery`, `AdvanceRecovery`, `ShutdownRecovery`, `HumanAssistanceRecovery`, `CancelMissionRecovery` |
 
-Each plugin resides in its own ROS 2 package and is registered via `pluginlib`, allowing dynamic loading at runtime.
+A component can also ship recovery for its own failures. For example, `easynav_costmap_localizer`
+ships `AmclConvergenceEvaluator` and `AmclRelocalizeMitigation`.
 
----
+## Plugins
 
-## Repository Structure
+Each plugin's parameters are under `recovery_manager.<type>.`. Every mitigation also takes `priority`
+(default `100`).
 
-### 🧭 Planners
-
-Path planning plugins implementing A*, costmap, or NavMap–based methods.
-
-| Package | Description | Link |
+| Plugin | Does | Parameters (default) |
 |---|---|---|
-| `easynav_costmap_planner` | A* planner over `Costmap2D`. | [README](./planners/easynav_costmap_planner/README.md) |
-| `easynav_simple_planner` | Simple A* planner for `SimpleMap`. | [README](./planners/easynav_simple_planner/README.md) |
-| `easynav_navmap_planner` | A* planner over a NavMap mesh. | [README](./planners/easynav_navmap_planner/README.md) |
+| `easynav_diagnostic_recovery/CollisionSafetyReflex` | Brakes if the commanded motion would hit an obstacle within its stopping distance. The robot's radius and height come from `system_node.robot_geometry`. | `brake_acc` (0.5), `safety_margin` (0.1), `z_min_filter` (0.0), `downsample_leaf_size` (0.1), `debug_markers` (false) |
+| `easynav_diagnostic_recovery/NoPathEvaluator` | `ERROR` (`planner`) if there is a goal but the path is empty (`WARN` until the first path). | — |
+| `easynav_diagnostic_recovery/ObstacleTooCloseEvaluator` | `ERROR` (`obstacle_proximity`) if the robot is stopped closer than `safe_distance` (from the robot center) to an obstacle (after `debounce_duration` s stopped). Points below `z_min_filter` or above the robot height (`robot_geometry`) are ignored. | `safe_distance` (0.6), `z_min_filter` (0.0), `debounce_duration` (0.2), `linear_velocity_epsilon` (0.02), `angular_velocity_epsilon` (0.05) |
+| `easynav_diagnostic_recovery/ControllerStuckEvaluator` | `ERROR` (`controller_stuck`) if commanded to move but not progressing (not while paused or during a protective stop). | `linear_velocity_threshold` (0.02), `progress_distance_threshold` (0.05), `stuck_time_threshold` (2.0) |
+| `easynav_diagnostic_recovery/RosGraphEvaluator` | `ERROR` (`ros_graph`) if an EasyNav subscription has no publisher, or its velocity output has no consumer. | `freq` (10.0), `startup_grace` (15.0), `error_debounce` (2.0), `ignored_topics`, `ignored_consumers` |
+| `easynav_diagnostic_recovery/SafetyChannelEvaluator` | `WARN` (`safety_channel`) during a protective stop of the safety channel, or with its status lost (`safety_status`, see `system_node`'s `safety.status.timeout`); `ERROR` once it lasts `max_stop_time` s. | `max_stop_time` (0: never `ERROR`) |
+| `easynav_diagnostic_recovery/SafeRetreatRecovery` | Handles `obstacle_proximity`: moves straight away until `safe_distance` (from the robot center): backward from an obstacle ahead, forward from one behind or beside (the other way if that one is blocked and the obstacle is beside). Fails, stopped, without perception or a clear way (`min_clearance` along its corridor). | `safe_distance` (0.6), `retreat_speed` (0.15), `min_clearance` (0.05), `z_min_filter` (0.0) |
+| `easynav_diagnostic_recovery/AdvanceRecovery` | Handles `controller_stuck`: moves forward a little. Gives up after `escalate_after` s of repeated attempts. | `advance_distance` (0.3), `advance_speed` (0.1), `escalate_after` (15.0), `episode_gap` (10.0) |
+| `easynav_diagnostic_recovery/ShutdownRecovery` | Handles the listed diagnostics by terminating EasyNav. | `handled_hardware_ids` ([`ros_graph`]) |
+| `easynav_diagnostic_recovery/HumanAssistanceRecovery` | Handles any `ERROR` not in `ignored_hardware_ids`: stops and waits until those clear. `timeout` 0 waits forever. | `timeout` (0.0), `ignored_hardware_ids` ([`ros_graph`]) |
+| `easynav_diagnostic_recovery/CancelMissionRecovery` | Handles any `ERROR`: aborts the mission. The last resort. | — |
+| `easynav_costmap_localizer/AmclConvergenceEvaluator` | `ERROR` (`localizer.amcl`) if AMCL's covariance trace exceeds the threshold. | `covariance_threshold` (1.0) |
+| `easynav_costmap_localizer/AmclRelocalizeMitigation` | Handles `localizer.amcl`: rotates until AMCL converges, or fails after `timeout`. | `covariance_threshold` (1.0), `rotation_speed` (0.3), `timeout` (5.0) |
 
----
+## Usage
 
-### ⚙️ Controllers
+```yaml
+recovery_node:
+  ros__parameters:
+    recovery_manager:
+      plugin: easynav_diagnostic_recovery/DiagnosticRecoveryManager
+      safety_reflex_types: [collision]
+      collision:
+        plugin: easynav_diagnostic_recovery/CollisionSafetyReflex
+      evaluator_types: [no_path, obstacle_close, controller_stuck, amcl_convergence, ros_graph]
+      no_path:
+        plugin: easynav_diagnostic_recovery/NoPathEvaluator
+      obstacle_close:
+        plugin: easynav_diagnostic_recovery/ObstacleTooCloseEvaluator
+      controller_stuck:
+        plugin: easynav_diagnostic_recovery/ControllerStuckEvaluator
+      amcl_convergence:
+        plugin: easynav_costmap_localizer/AmclConvergenceEvaluator
+      ros_graph:
+        plugin: easynav_diagnostic_recovery/RosGraphEvaluator
+      # Tried in priority order (lower first) for each ERROR they can handle:
+      # specific fixes -> terminate on a miswired graph -> wait for a human -> cancel the mission
+      mitigation_types: [retreat, amcl_relocalize, advance, shutdown, human_assistance, cancel_mission]
+      retreat:
+        plugin: easynav_diagnostic_recovery/SafeRetreatRecovery
+        priority: 10
+      amcl_relocalize:
+        plugin: easynav_costmap_localizer/AmclRelocalizeMitigation
+        priority: 10
+      advance:
+        plugin: easynav_diagnostic_recovery/AdvanceRecovery
+        priority: 10
+      shutdown:
+        plugin: easynav_diagnostic_recovery/ShutdownRecovery
+        priority: 100
+      human_assistance:
+        plugin: easynav_diagnostic_recovery/HumanAssistanceRecovery
+        priority: 1000
+        timeout: 30.0
+      cancel_mission:
+        plugin: easynav_diagnostic_recovery/CancelMissionRecovery
+        priority: 2000
+```
 
-Motion controllers for trajectory tracking and reactive behaviors.
+## Writing a plugin
 
-| Package | Description | Link |
-|---|---|---|
-| `easynav_vff_controller` | Vector Field Force (VFF) reactive controller. | [README](./controllers/easynav_vff_controller/README.md) |
-| `easynav_mppi_controller` | Model Predictive Path Integral (MPPI) controller. | [README](./controllers/easynav_mppi_controller/README.md) |
-| `easynav_simple_controller` | Simple proportional controller for testing. | [README](./controllers/easynav_simple_controller/README.md) |
-| `easynav_serest_controller` | SeReST (Safe Reactive Steering) controller. | [README](./controllers/easynav_serest_controller/README.md) |
-| `easynav_mpc_controller` | Model Predictive Controller (MPC). | [README](./controllers/easynav_mpc_controller/README.md) |
-| `easynav_regulated_pp_controller` | Regulated Pure Pursuit controller, with optional Dynamic Window (DWPP) extension. | [README](./controllers/easynav_regulated_pp_controller/README.md) |
+Derive from one of the interfaces, in any package:
 
----
+| Interface | Implement |
+|---|---|
+| `easynav_diagnostic_recovery::SafetyReflexBase` | `check()`: is the command about to be sent (`commanded_velocity()`) dangerous? `mitigate()`: `override_velocity()` or `stop_robot()`. |
+| `easynav_diagnostic_recovery::RecoveryEvaluatorBase` | `update()`: diagnose and `publish_diagnostic()` every time, OK included. |
+| `easynav_diagnostic_recovery::RecoveryMitigationBase` | `can_handle(status)`; `on_start()`, `on_cycle()` (returns `RUNNING`, `SUCCEEDED` or `FAILED`) and `on_stop()`. Use `command_velocity()` if it `requires_control()`, and `report()` what it does. |
 
-### 🗺️ Maps Managers
+Register it against `easynav_diagnostic_recovery`, with its full base class:
 
-Map management plugins that provide, update, and store different environment representations.
+```xml
+<class name="my_pkg/MyEvaluator" type="my_ns::MyEvaluator"
+       base_class_type="easynav_diagnostic_recovery::RecoveryEvaluatorBase">
+```
 
-| Package | Description | Link |
-|---|---|---|
-| `easynav_navmap_maps_manager` | Manages NavMap mesh layers. | [README](./maps_managers/easynav_navmap_maps_manager/README.md) |
-| `easynav_bonxai_maps_manager` | Manages Bonxai probabilistic voxel maps. | [README](./maps_managers/easynav_bonxai_maps_manager/README.md) |
-| `easynav_octomap_maps_manager` | Manages OctoMap 3D occupancy trees. | [README](./maps_managers/easynav_octomap_maps_manager/README.md) |
-| `easynav_costmap_maps_manager` | Manages Costmap2D layers with filters. | [README](./maps_managers/easynav_costmap_maps_manager/README.md) |
-| `easynav_simple_maps_manager` | Minimal example map manager (SimpleMap). | [README](./maps_managers/easynav_simple_maps_manager/README.md) |
-
----
-
-### 📍 Localizers
-
-Localization plugins based on different map types and sensors.
-
-| Package | Description | Link |
-|---|---|---|
-| `easynav_gps_localizer` | GPS-based localizer for outdoor navigation. | [README](./localizers/easynav_gps_localizer/README.md) |
-| `easynav_simple_localizer` | Basic localizer for SimpleMap–based setups. | [README](./localizers/easynav_simple_localizer/README.md) |
-| `easynav_navmap_localizer` | AMCL-like localizer operating on NavMap meshes. | [README](./localizers/easynav_navmap_localizer/README.md) |
-| `easynav_costmap_localizer` | AMCL-like localizer using Costmap2D. | [README](./localizers/easynav_costmap_localizer/README.md) |
-| `easynav_mhamcl_localizer` | Multi-Hypothesis AMCL localizer using Costmap2D: global localization and kidnapping recovery. | [README](./localizers/easynav_mhamcl_localizer/README.md) |
-| `easynav_fusion_localizer` | Multi-sensor fusion localizer (e.g., GPS + odometry + map). | [README](./localizers/easynav_fusion_localizer/README.md) |
-
----
-
-## License
-
-All packages in this repository are released under **Apache-2.0** unless stated otherwise in the individual package.
+```cmake
+pluginlib_export_plugin_description_file(easynav_diagnostic_recovery my_pkg_plugins.xml)
+```
