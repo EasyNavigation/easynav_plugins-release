@@ -1,0 +1,12 @@
+Source: ros-humble-easynav-navmap-maps-manager
+Section: misc
+Priority: optional
+Maintainer: "Francisco Martín Rico" <fmrico@gmail.com>
+Build-Depends: debhelper (>= 9.0.0), graphicsmagick-libmagick-dev-compat, libeigen3-dev, libgraphicsmagick++1-dev, ros-humble-ament-cmake, ros-humble-ament-cmake-gtest <!nocheck>, ros-humble-ament-index-cpp, ros-humble-ament-lint-auto <!nocheck>, ros-humble-ament-lint-common <!nocheck>, ros-humble-easynav-common, ros-humble-easynav-core, ros-humble-easynav-sensors, ros-humble-geometry-msgs <!nocheck>, ros-humble-nav-msgs, ros-humble-navmap-core, ros-humble-navmap-ros, ros-humble-navmap-ros-interfaces, ros-humble-pluginlib, ros-humble-rclcpp, ros-humble-rclcpp-lifecycle, ros-humble-sensor-msgs, ros-humble-std-srvs, ros-humble-tf2, ros-humble-tf2-geometry-msgs, ros-humble-tf2-ros, ros-humble-yaets, ros-humble-yaml-cpp-vendor, ros-humble-ros-workspace
+Homepage: https://index.ros.org/p/easynav_navmap_maps_manager/#humble
+Standards-Version: 3.9.2
+
+Package: ros-humble-easynav-navmap-maps-manager
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, graphicsmagick-libmagick-dev-compat, libeigen3-dev, libgraphicsmagick++1-dev, ros-humble-ament-index-cpp, ros-humble-easynav-common, ros-humble-easynav-core, ros-humble-easynav-sensors, ros-humble-nav-msgs, ros-humble-navmap-core, ros-humble-navmap-ros, ros-humble-navmap-ros-interfaces, ros-humble-pluginlib, ros-humble-rclcpp, ros-humble-rclcpp-lifecycle, ros-humble-sensor-msgs, ros-humble-std-srvs, ros-humble-tf2, ros-humble-tf2-geometry-msgs, ros-humble-tf2-ros, ros-humble-yaets, ros-humble-yaml-cpp-vendor, ros-humble-ros-workspace
+Description: Easy Navigation: Simple MapsManager package.
