@@ -2,6 +2,11 @@
 Changelog for package easynav_simple_common
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.5.0 (2026-10-08)
+------------------
+* Removed unused dependencies
+* Contributors: Francisco Martín Rico
+
 0.4.2 (2026-07-26)
 ------------------
 * GPLv3 -> Apache 2.0
