@@ -2,6 +2,13 @@
 Changelog for package easynav_fusion_localizer
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.5.0 (2026-10-08)
+------------------
+* Runtime reconfiguration
+* Fixed NaN in the local filter and a node leak
+* Builds on Humble, Jazzy, Kilted, Lyrical and Rolling
+* Contributors: Francisco Martín Rico, Miguel Ángel de Miguel Paraíso
+
 0.4.2 (2026-07-26)
 ------------------
 * Complete deps
