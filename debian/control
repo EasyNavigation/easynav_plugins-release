@@ -1,0 +1,12 @@
+Source: ros-kilted-easynav-diagnostic-recovery
+Section: misc
+Priority: optional
+Maintainer: "Francisco Martín Rico" <fmrico@gmail.com>
+Build-Depends: debhelper (>= 9.0.0), libpcl-dev, ros-kilted-ament-cmake, ros-kilted-ament-cmake-gtest <!nocheck>, ros-kilted-ament-lint-auto <!nocheck>, ros-kilted-ament-lint-common <!nocheck>, ros-kilted-diagnostic-msgs, ros-kilted-easynav-common, ros-kilted-easynav-core, ros-kilted-easynav-planner <!nocheck>, ros-kilted-easynav-recovery <!nocheck>, ros-kilted-easynav-sensors, ros-kilted-geometry-msgs, ros-kilted-lifecycle-msgs <!nocheck>, ros-kilted-nav-msgs, ros-kilted-pluginlib, ros-kilted-rcl-interfaces, ros-kilted-rclcpp, ros-kilted-rclcpp-lifecycle, ros-kilted-visualization-msgs, ros-kilted-ros-workspace
+Homepage: https://index.ros.org/p/easynav_diagnostic_recovery/#kilted
+Standards-Version: 3.9.2
+
+Package: ros-kilted-easynav-diagnostic-recovery
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, libpcl-dev, ros-kilted-diagnostic-msgs, ros-kilted-easynav-common, ros-kilted-easynav-core, ros-kilted-easynav-sensors, ros-kilted-geometry-msgs, ros-kilted-nav-msgs, ros-kilted-pluginlib, ros-kilted-rcl-interfaces, ros-kilted-rclcpp, ros-kilted-rclcpp-lifecycle, ros-kilted-visualization-msgs, ros-kilted-ros-workspace
+Description: Easy Navigation: diagnosis-driven recovery system (safety reflexes, evaluators and mitigations with priority-based arbitration), the plugin interfaces it is composed of and the reference safety reflexes, evaluators and mitigations.
