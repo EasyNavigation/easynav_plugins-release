@@ -1,0 +1,12 @@
+Source: ros-lyrical-easynav-diagnostic-recovery
+Section: misc
+Priority: optional
+Maintainer: "Francisco Martín Rico" <fmrico@gmail.com>
+Build-Depends: debhelper (>= 9.0.0), libpcl-dev, ros-lyrical-ament-cmake, ros-lyrical-ament-cmake-gtest <!nocheck>, ros-lyrical-ament-lint-auto <!nocheck>, ros-lyrical-ament-lint-common <!nocheck>, ros-lyrical-diagnostic-msgs, ros-lyrical-easynav-common, ros-lyrical-easynav-core, ros-lyrical-easynav-planner <!nocheck>, ros-lyrical-easynav-recovery <!nocheck>, ros-lyrical-easynav-sensors, ros-lyrical-geometry-msgs, ros-lyrical-lifecycle-msgs <!nocheck>, ros-lyrical-nav-msgs, ros-lyrical-pluginlib, ros-lyrical-rcl-interfaces, ros-lyrical-rclcpp, ros-lyrical-rclcpp-lifecycle, ros-lyrical-visualization-msgs, ros-lyrical-ros-workspace
+Homepage: https://index.ros.org/p/easynav_diagnostic_recovery/#lyrical
+Standards-Version: 3.9.2
+
+Package: ros-lyrical-easynav-diagnostic-recovery
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, libpcl-dev, ros-lyrical-diagnostic-msgs, ros-lyrical-easynav-common, ros-lyrical-easynav-core, ros-lyrical-easynav-sensors, ros-lyrical-geometry-msgs, ros-lyrical-nav-msgs, ros-lyrical-pluginlib, ros-lyrical-rcl-interfaces, ros-lyrical-rclcpp, ros-lyrical-rclcpp-lifecycle, ros-lyrical-visualization-msgs, ros-lyrical-ros-workspace
+Description: Easy Navigation: diagnosis-driven recovery system (safety reflexes, evaluators and mitigations with priority-based arbitration), the plugin interfaces it is composed of and the reference safety reflexes, evaluators and mitigations.
