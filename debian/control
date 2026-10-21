@@ -1,0 +1,12 @@
+Source: ros-humble-easynav-diagnostic-recovery
+Section: misc
+Priority: optional
+Maintainer: "Francisco Martín Rico" <fmrico@gmail.com>
+Build-Depends: debhelper (>= 9.0.0), libpcl-dev, ros-humble-ament-cmake, ros-humble-ament-cmake-gtest <!nocheck>, ros-humble-ament-lint-auto <!nocheck>, ros-humble-ament-lint-common <!nocheck>, ros-humble-diagnostic-msgs, ros-humble-easynav-common, ros-humble-easynav-core, ros-humble-easynav-planner <!nocheck>, ros-humble-easynav-recovery <!nocheck>, ros-humble-easynav-sensors, ros-humble-geometry-msgs, ros-humble-lifecycle-msgs <!nocheck>, ros-humble-nav-msgs, ros-humble-pluginlib, ros-humble-rcl-interfaces, ros-humble-rclcpp, ros-humble-rclcpp-lifecycle, ros-humble-visualization-msgs, ros-humble-ros-workspace
+Homepage: https://index.ros.org/p/easynav_diagnostic_recovery/#humble
+Standards-Version: 3.9.2
+
+Package: ros-humble-easynav-diagnostic-recovery
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, libpcl-dev, ros-humble-diagnostic-msgs, ros-humble-easynav-common, ros-humble-easynav-core, ros-humble-easynav-sensors, ros-humble-geometry-msgs, ros-humble-nav-msgs, ros-humble-pluginlib, ros-humble-rcl-interfaces, ros-humble-rclcpp, ros-humble-rclcpp-lifecycle, ros-humble-visualization-msgs, ros-humble-ros-workspace
+Description: Easy Navigation: diagnosis-driven recovery system (safety reflexes, evaluators and mitigations with priority-based arbitration), the plugin interfaces it is composed of and the reference safety reflexes, evaluators and mitigations.
