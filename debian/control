@@ -1,0 +1,12 @@
+Source: ros-humble-easynav-navmap-planner
+Section: misc
+Priority: optional
+Maintainer: "Francisco Martín Rico" <fmrico@gmail.com>
+Build-Depends: debhelper (>= 9.0.0), libeigen3-dev, ros-humble-ament-cmake, ros-humble-ament-cmake-gtest <!nocheck>, ros-humble-ament-lint-auto <!nocheck>, ros-humble-ament-lint-common <!nocheck>, ros-humble-easynav-common, ros-humble-easynav-core, ros-humble-geometry-msgs, ros-humble-nav-msgs, ros-humble-navmap-core, ros-humble-navmap-ros, ros-humble-navmap-ros-interfaces, ros-humble-pluginlib, ros-humble-rclcpp, ros-humble-rclcpp-lifecycle <!nocheck>, ros-humble-ros-workspace
+Homepage: https://index.ros.org/p/easynav_navmap_planner/#humble
+Standards-Version: 3.9.2
+
+Package: ros-humble-easynav-navmap-planner
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, libeigen3-dev, ros-humble-easynav-common, ros-humble-easynav-core, ros-humble-geometry-msgs, ros-humble-nav-msgs, ros-humble-navmap-core, ros-humble-navmap-ros, ros-humble-navmap-ros-interfaces, ros-humble-pluginlib, ros-humble-rclcpp, ros-humble-ros-workspace
+Description: Easy Navigation: navmap planner package.
