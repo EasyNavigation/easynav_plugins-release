@@ -1,30 +1,13 @@
-# EasyNav Plugins
-
-[![Doxygen Deployment](https://github.com/EasyNavigation/easynav_plugins/actions/workflows/doxygen-doc.yml/badge.svg)](https://github.com/EasyNavigation/easynav_plugins/actions/workflows/doxygen-doc.yml)
-[![rolling](https://github.com/EasyNavigation/easynav_plugins/actions/workflows/rolling.yaml/badge.svg?branch=rolling)](https://github.com/EasyNavigation/easynav_plugins/actions/workflows/rolling.yaml)
-[![lyrical](https://github.com/EasyNavigation/easynav_plugins/actions/workflows/lyrical.yaml/badge.svg?branch=lyrical)](https://github.com/EasyNavigation/easynav_plugins/actions/workflows/lyrical.yaml)
-[![kilted](https://github.com/EasyNavigation/easynav_plugins/actions/workflows/kilted.yaml/badge.svg?branch=kilted)](https://github.com/EasyNavigation/easynav_plugins/actions/workflows/kilted.yaml)
-[![jazzy](https://github.com/EasyNavigation/easynav_plugins/actions/workflows/jazzy.yaml/badge.svg?branch=jazzy)](https://github.com/EasyNavigation/easynav_plugins/actions/workflows/jazzy.yaml)
-[![humble](https://github.com/EasyNavigation/easynav_plugins/actions/workflows/humble.yaml/badge.svg?branch=humble)](https://github.com/EasyNavigation/easynav_plugins/actions/workflows/humble.yaml)
-
---- 
-
-<img width="240" height="47" alt="MICIU+Cofinanciado+AEI" src="https://github.com/user-attachments/assets/fedfcf13-6af6-43d7-8290-fe22da4e1db0" />
-<img width="240" height="50" alt="eu_funded_en" src="https://github.com/user-attachments/assets/b11da974-9201-4f79-902e-c9c20e8aa7a4" />
-Funded by the European Union through the Horizon Europe programme under Grant Agreement No. 101070254 (CoreSense), and by MICIU/AEI/10.13039/501100011033 and ERDF/EU under grants PERMAP PID2024-161761OB-C21 and PLANNAV PID2024-161761OB-C22 (AURORAS).
-
----
-
-📋 Roadmap Project: [RoadMap](https://github.com/EasyNavigation/EasyNavigation/blob/rolling/ROADMAP.md)
+# easynav_navmap_localizer
 
 ## Description
 
-**EasyNav Plugins** provides the official collection of plugins for the [Easy Navigation (EasyNav)](https://github.com/EasyNavigation) framework.  
-These plugins extend the navigation core with planners, controllers, maps managers, localizers and recovery systems compatible with ROS 2.
+Easy Navigation: nAVmAP Localizer package.
 
-Each plugin resides in its own ROS 2 package and is registered via `pluginlib`, allowing dynamic loading at runtime.
+## Authors and Maintainers
 
----
+- **Authors:** Intelligent Robotics Lab
+- **Maintainers:** Francisco Martín Rico <fmrico@gmail.com>
 
 ## Supported ROS 2 Distributions
 
@@ -36,97 +19,85 @@ Each plugin resides in its own ROS 2 package and is registered via `pluginlib`, 
 | lyrical | ![lyrical](https://img.shields.io/badge/lyrical-supported-brightgreen) |
 | rolling | ![rolling](https://img.shields.io/badge/rolling-supported-brightgreen) |
 
-## Installation
+## Plugin (pluginlib)
 
-With APT (Humble, Jazzy, Kilted and Lyrical), install the plugins your configuration uses:
+- **Plugin Name:** `easynav_navmap_localizer/AMCLLocalizer`
+- **Type:** `easynav::navmap::AMCLLocalizer`
+- **Base Class:** `easynav::LocalizerMethodBase`
+- **Library:** `easynav_navmap_localizer`
+- **Description:** A default "navmap" implementation for the AMCL localizer.
 
-```bash
-sudo apt install ros-<distro>-easynav-costmap-maps-manager ros-<distro>-easynav-regulated-pp-controller
-```
+## Parameters
 
-They are also available with Pixi and from source (cloning this repository builds all of them).
-See the [installation guide](https://easynavigation.github.io/build_install/index.html).
+All parameters are declared under the plugin name namespace, i.e., `/<node_fqn>/easynav_navmap_localizer/AMCLLocalizer/...`.
 
-## Repository Structure
+| Name | Type | Default | Description |
+|---|---|---:|---|
+| `<plugin>.num_particles` | `int` | `100` | Number of AMCL particles. |
+| `<plugin>.initial_pose.x` | `double` | `0.0` | Initial X position (m). |
+| `<plugin>.initial_pose.y` | `double` | `0.0` | Initial Y position (m). |
+| `<plugin>.initial_pose.yaw` | `double` | `0.0` | Initial yaw (rad). |
+| `<plugin>.initial_pose.std_dev_xy` | `double` | `0.5` | Std dev used to sample initial X/Y. |
+| `<plugin>.initial_pose.std_dev_yaw` | `double` | `0.5` | Std dev used to sample initial yaw. |
+| `<plugin>.reseed_freq` | `double` | `1.0` | Reseeding frequency (Hz). |
+| `<plugin>.noise_translation` | `double` | `0.01` | Translational noise factor. |
+| `<plugin>.noise_rotation` | `double` | `0.01` | Rotational noise factor. |
+| `<plugin>.noise_translation_to_rotation` | `double` | `0.01` | Translation-to-rotation noise coupling. |
+| `<plugin>.min_noise_xy` | `double` | `0.05` | Minimum XY noise (m). |
+| `<plugin>.min_noise_yaw` | `double` | `0.05` | Minimum yaw noise (rad). |
+| `<plugin>.compute_odom_from_tf` | `bool` | `false` | If true, read odometry from TF (odom->base_footprint) instead of /odom topic. |
+| `<plugin>.inflation_stddev` | `double` | `0.05` | Std dev used in occupancy inflation (m). |
+| `<plugin>.inflation_prob_min` | `double` | `0.01` | Minimum occupancy probability after inflation. |
+| `<plugin>.correct_max_points` | `int` | `1500` | Maximum points of each sensor's cloud scored per correction (after downsampling and the height band), evenly spread over it. |
+| `<plugin>.weights_tau` | `double` | `0.7` | Exponential decay factor for particle weight smoothing. |
+| `<plugin>.top_keep_fraction` | `double` | `0.2` | Fraction of top particles to keep before reseeding. |
+| `<plugin>.downsampled_cloud_size` | `double` | `0.05` | Voxel size for point cloud downsampling (m). Of the order of the Bonxai map's voxels: much larger leaves too few points to tell poses apart. |
+| `<plugin>.min_point_height` | `double` | `-inf` | Only points at least this high over the robot's footprint are scored (m). For 3D sensors: the floor fits any particle standing on it. |
+| `<plugin>.max_point_height` | `double` | `inf` | Only points at most this high over the robot's footprint are scored (m), e.g. below a ceiling. |
+| `<plugin>.ray_occlusion` | `bool` | `false` | A point whose ray from the sensor crosses an occupied voxel scores nothing. With voxels a few decimetres wide, rays along a floor or a ceiling look occluded, and the true pose scores worse than wrong ones. |
+| `<plugin>.reseed_min_d` | `double` | `0.1` | Reseed only after the odometry has moved this much since the last reseed (m), or turned `reseed_min_a`: standing still, reseeding makes the particles wander. |
+| `<plugin>.reseed_min_a` | `double` | `0.1` | See `reseed_min_d` (rad). |
+| `<plugin>.odom_slip_fraction` | `double` | `0.05` | Each particle moves with its own scale of the odometry's translation. This fraction of the reseeded ones take any scale in [0, 1]: when the wheels slip, those that hardly move fit the sensors and survive. Rough terrain: higher (0.2). |
+| `<plugin>.odom_scale_noise` | `double` | `0.02` | Noise of the scale a reseeded particle takes from its reference: the particles learn the odometry's scale. |
+| `<plugin>.recovery_alpha_slow` | `double` | `0.001` | Rate of the slow average of the scan likelihood (of the best particles), per correction. |
+| `<plugin>.recovery_alpha_fast` | `double` | `0.1` | Rate of the fast average. When it falls below the slow one, each reseed spreads the worst particles widely around the estimate, a fraction `1 - fast/slow` of those it replaces. `0` for both turns recovery off; it needs `0 <= slow < fast <= 1`. |
+| `<plugin>.recovery_spread_xy` | `double` | `1.0` | Standard deviation of the spread particles' position around the estimate (m). |
+| `<plugin>.recovery_spread_yaw` | `double` | `0.5` | Standard deviation of their heading around the best particle's (rad). |
 
-### 🧭 Planners
+## Interfaces (Topics and Services)
 
-Path planning plugins implementing A*, costmap, or NavMap–based methods.
+### Subscriptions and Publications
 
-| Package | Description | Link |
+| Direction | Topic | Type | Purpose | QoS |
+|---|---|---|---|---|
+| Subscription | `/odom` | `nav_msgs/msg/Odometry` | Used only when `<plugin>.compute_odom_from_tf = false` | SensorDataQoS (reliable) |
+| Subscription | `initialpose` | `geometry_msgs/msg/PoseWithCovarianceStamped` | Initialize particles pose to the received pose, using covariance | depth=10 |
+| Publisher | `<node_fqn>/<plugin>/particles` | `geometry_msgs/msg/PoseArray` | Publishes the current particle set | depth=10 |
+| Publisher | `<node_fqn>/<plugin>/pose` | `geometry_msgs/msg/PoseWithCovarianceStamped` | Publishes the estimated pose with covariance | depth=10 |
+
+### Services
+
+This package does not create service servers or clients.
+
+## NavState Keys
+
+| Key | Type | Access | Notes |
+|---|---|---|---|
+| `imu` | `IMUPerceptions` | **Read** | When available, the particles take its roll and pitch, and turn by the change of its yaw (not by the odometry's); its absolute yaw is never used (without a magnetometer it is arbitrary and drifts). Without it, the orientation follows the NavMap surface and the odometry's turns. |
+| `points` | `PointPerceptions` | **Read** | Point clouds used in the correction step: only the valid ones (newer than the sensors' `forget_time`), each where the sensor was when it took it (the odometry since then, through `odom`). |
+| `map.navmap` | `::navmap::NavMap` | **Read** | Triangle mesh map providing surface geometry and elevation. |
+| `map.bonxai` | `Bonxai::ProbabilisticMap` | **Read** | Probabilistic occupancy map used for scoring. |
+| `map.bonxai.inflated` | `Bonxai::ProbabilisticMap` | **Write/Read** | Inflated map cached on first access for faster scoring. |
+| `robot_pose` | `nav_msgs::msg::Odometry` | **Write** | Estimated robot pose stored at the end of update/predict, with its roll and pitch (the IMU's, or the surface's). |
+
+## TF Frames
+
+| Role | Transform | Notes |
 |---|---|---|
-| `easynav_costmap_planner` | A* planner over `Costmap2D`. | [README](./planners/easynav_costmap_planner/README.md) |
-| `easynav_simple_planner` | Simple A* planner for `SimpleMap`. | [README](./planners/easynav_simple_planner/README.md) |
-| `easynav_navmap_planner` | A* planner over a NavMap mesh. | [README](./planners/easynav_navmap_planner/README.md) |
-
----
-
-### ⚙️ Controllers
-
-Motion controllers for trajectory tracking and reactive behaviors.
-
-| Package | Description | Link |
-|---|---|---|
-| `easynav_vff_controller` | Vector Field Force (VFF) reactive controller. | [README](./controllers/easynav_vff_controller/README.md) |
-| `easynav_mppi_controller` | Model Predictive Path Integral (MPPI) controller. | [README](./controllers/easynav_mppi_controller/README.md) |
-| `easynav_simple_controller` | Simple proportional controller for testing. | [README](./controllers/easynav_simple_controller/README.md) |
-| `easynav_serest_controller` | SeReST (Safe Reactive Steering) controller. | [README](./controllers/easynav_serest_controller/README.md) |
-| `easynav_mpc_controller` | Model Predictive Controller (MPC). | [README](./controllers/easynav_mpc_controller/README.md) |
-| `easynav_regulated_pp_controller` | Regulated Pure Pursuit controller, with optional Dynamic Window (DWPP) extension. | [README](./controllers/easynav_regulated_pp_controller/README.md) |
-
----
-
-### 🗺️ Maps Managers
-
-Map management plugins that provide, update, and store different environment representations.
-
-| Package | Description | Link |
-|---|---|---|
-| `easynav_navmap_maps_manager` | Manages NavMap mesh layers. | [README](./maps_managers/easynav_navmap_maps_manager/README.md) |
-| `easynav_bonxai_maps_manager` | Manages Bonxai probabilistic voxel maps. | [README](./maps_managers/easynav_bonxai_maps_manager/README.md) |
-| `easynav_octomap_maps_manager` | Manages OctoMap 3D occupancy trees. | [README](./maps_managers/easynav_octomap_maps_manager/README.md) |
-| `easynav_costmap_maps_manager` | Manages Costmap2D layers with filters. | [README](./maps_managers/easynav_costmap_maps_manager/README.md) |
-| `easynav_simple_maps_manager` | Minimal example map manager (SimpleMap). | [README](./maps_managers/easynav_simple_maps_manager/README.md) |
-| `easynav_routes_maps_manager` | Manages navigation routes (2D or 3D), editable in RViz with interactive markers. | [README](./maps_managers/easynav_routes_maps_manager/README.md) |
-
----
-
-### 📍 Localizers
-
-Localization plugins based on different map types and sensors.
-
-| Package | Description | Link |
-|---|---|---|
-| `easynav_simple_localizer` | Basic localizer for SimpleMap–based setups. | [README](./localizers/easynav_simple_localizer/README.md) |
-| `easynav_navmap_localizer` | AMCL-like localizer operating on NavMap meshes. | [README](./localizers/easynav_navmap_localizer/README.md) |
-| `easynav_costmap_localizer` | AMCL-like localizer using Costmap2D. | [README](./localizers/easynav_costmap_localizer/README.md) |
-| `easynav_mhamcl_localizer` | Multi-Hypothesis AMCL localizer using Costmap2D: global localization and kidnapping recovery. | [README](./localizers/easynav_mhamcl_localizer/README.md) |
-| `easynav_fusion_localizer` | Fuses any number of odometry sources (wheels, IMU, GPS...) with `robot_localization`. | [README](./localizers/easynav_fusion_localizer/README.md) |
-
----
-
-### 🩺 Recovery Systems
-
-Recovery systems detect navigation problems (lost localization, a dead sensor, a stuck robot...) and react to them.
-
-| Package | Description | Link |
-|---|---|---|
-| `easynav_diagnostic_recovery` | Diagnosis-driven recovery system: safety reflexes, evaluators and mitigations with priority-based arbitration. | [README](./recoveries/easynav_diagnostic_recovery/README.md) |
-| `easynav_simple_recovery` | A simple recovery system, written as a starting point for your own. | [README](./recoveries/easynav_simple_recovery/README.md) |
-
----
-
-### 🧱 Common
-
-Types shared by several plugins.
-
-| Package | Description |
-|---|---|
-| `easynav_costmap_common` | `Costmap2D` and the cost values used by the costmap plugins. |
-| `easynav_simple_common` | `SimpleMap`, used by the simple plugins. |
-
----
+| Publishes | `map -> odom` | Broadcasts the global transform that aligns the odometry frame with the map frame. It carries the robot's roll and pitch (the IMU's, or the surface's) when the odometry is planar: on a slope, the points the sensors see are placed where they are. |
+| Requires | `odom -> base_footprint` | Required only when `<plugin>.compute_odom_from_tf = true` (read from TF). |
+| Requires | `base_footprint -> <sensor_frame>` | Required to transform perception point clouds into the robot base frame during correction, at the cloud's time through `odom` (falls back to the latest one). |
 
 ## License
 
-All packages in this repository are released under **Apache-2.0** unless stated otherwise in the individual package.
+Apache-2.0
